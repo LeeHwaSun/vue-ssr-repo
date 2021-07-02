@@ -3,7 +3,20 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+export function createStore() {
+  const store = new Vuex.Store({
+    state: {
+    },
+    mutations: {
+    },
+    actions: {
+    },
+    modules: {
+    }
+  });
+  return store;
+}
+/*export default new Vuex.Store({
   state: {
   },
   mutations: {
@@ -12,4 +25,4 @@ export default new Vuex.Store({
   },
   modules: {
   }
-})
+})*/
