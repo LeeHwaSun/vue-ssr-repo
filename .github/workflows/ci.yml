@@ -1,0 +1,24 @@
+name: SERVER distribute
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build: 
+    runs-on: ubuntu-18.04
+    
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_ID }}
+          key: ${{ secrets.REMOTE_KEY }}
+          port: ${{ secrets.REMOTE_PORT }}
+          script: |
+            cd /home/ubuntu/vue-ssr-repo
+            sudo git pull origin main
+            sudo yarn
+            sudo yarn build
+            sudo pm2 reload all
