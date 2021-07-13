@@ -9,7 +9,7 @@ const defaultOptions = {
 };
 
 export default {
-    install(Vue, vuetiry, options) {
+    install(Vue, vuetify, options) {
         const Construct = Vue.extend(myNotifyInterface);
         const Instance = new Construct({
             vuetify : vuetify,
