@@ -52,18 +52,21 @@
         this.$Progress.fail();
       },
       async notifyAlert() {
-        const res = await this.$myNotify.alert("내가 만든 얼럿", "안내", {
-          icon: "mdi-alert",
-          iconColor: "pink"
+        const res = await this.$myNotify.alert("테스트 내용입니다.", "안내", {
+          icon: "mdi-video-4k-box",
         });
         console.log(res);
       },
       async notifyConfirm() {
-        const res = await this.$myNotify.confirm("내가 만든 컨펌", "안내");
+        const res = await this.$myNotify.confirm("테스트 내용입니다.", "");
         console.log(res);
       },
       async notifyPrompt() {
-        const res = await this.$myNotify.prompt("내가 만든 프롬프트", "안내");
+        const res = await this.$myNotify.prompt(
+          "테스트 내용입니다.", 
+          "프롬프트",
+          { width: 200 }
+        );
         console.log(res);
       }
     }

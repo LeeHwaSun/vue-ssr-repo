@@ -52,7 +52,8 @@ export default {
                 });
             });
         },
-        close() {
+        close(result) {
+            this.promise.resolve(result);
             this.dialog = false;
             this.content = "";
             this.title = "";
@@ -75,8 +76,7 @@ export default {
             }
         },
         cancel() {
-            this.promise.resolve(false);
-            this.close();
+            this.close(false);
         }
     }
 }

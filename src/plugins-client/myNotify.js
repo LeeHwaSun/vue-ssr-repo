@@ -1,9 +1,9 @@
 import Vue from "vue";
 import vuetify from "../plugins/vuetify";
-import myNotifyPlugin from "./myNotifyPlugin/myNotifyPlugin";
+import myNotify from "./myNotifyPlugin";
 
 const options = {
-    width : 400,
+    iconColor: 'red',
 }
 
-Vue.use(myNotifyPlugin, vuetify, options);
+Vue.use(myNotify, vuetify, options);

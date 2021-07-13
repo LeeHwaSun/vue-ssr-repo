@@ -1,11 +1,11 @@
-import vuetify from "../../plugins/vuetify";
 import myNotifyInterface from "./myNotifyInterface.vue";
 
 const defaultOptions = {
-    width : 500,
-    iconColor : 'red',
-    icon : '',
-    type : 'alert',
+    width: 400,
+    icon: "",
+    iconColor: "orange",
+    type: "alert",
+    text: ""
 };
 
 export default {
