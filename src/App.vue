@@ -35,6 +35,9 @@
         <span class="mr-2">Latest Release</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
+
+      <v-btn to="/">Home</v-btn>
+      <v-btn to="/about">About</v-btn>
     </v-app-bar>
 
     <v-main>

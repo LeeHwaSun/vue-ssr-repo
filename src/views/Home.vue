@@ -26,6 +26,14 @@
 <script>
   export default {
     name: "Home",
+    data() {
+      return {
+        title : "My App",
+      }
+    },
+    title() {
+      return this.title;
+    },
     methods: {
       toastTestInfo() {
         this.$toast.info("Hello Info");
