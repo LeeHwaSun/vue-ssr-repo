@@ -16,13 +16,3 @@ export function createStore() {
   });
   return store;
 }
-/*export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})*/
