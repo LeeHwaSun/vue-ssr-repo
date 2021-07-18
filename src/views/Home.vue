@@ -28,7 +28,7 @@
     name: "Home",
     data() {
       return {
-        title : "My App",
+        title : "메인",
       }
     },
     title() {

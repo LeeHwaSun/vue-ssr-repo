@@ -7,6 +7,6 @@
 <script>
 export default {
   name : "About",
-  title : "About Page"
+  title : "도움말"
 }
 </script>
