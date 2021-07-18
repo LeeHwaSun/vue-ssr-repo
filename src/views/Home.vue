@@ -31,27 +31,6 @@
         title : "메인",
       }
     },
-    beforeCreate() {
-      console.log("Home.vue beforeCreate");
-    },
-    created() {
-      console.log("Home.vue title-mixin");
-      console.log("Home.vue created ", this.$ssrContext);
-    },
-    beforeMount() {
-      console.log("Home.vue beforeMount");
-    },
-    mounted() {
-      console.log("Home.vue title-mixin");
-      console.log("Home.vue mounted");
-    },
-    serverPrefetch() {
-      console.log('Home.vue serverPrefetch');
-      return new Promise((resolve, reject) => {
-        console.log("Home.vue serverPRefetch Promise");
-        resolve();
-      });
-    },
     title() {
       return this.title;
     },
