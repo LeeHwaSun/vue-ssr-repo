@@ -37,11 +37,6 @@ export default {
             return lg || xl;
         }
     },
-    watch : {
-        menu() {
-            this.initMenu();
-        }
-    },
     created() {
         this.initMenu();
     },

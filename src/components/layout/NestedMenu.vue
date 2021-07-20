@@ -3,7 +3,7 @@
         <div v-for="(item, i) in items" :key="`${i}${item.title}`">
             <v-list-group 
                 v-if="item.subItems && item.subItems.length > 0"
-                :prepend-icon="depth == 0 ? item.icon : ''"
+                :prepend-icon="depth === 0 ? item.icon : ''"
                 append-icon=""
                 no-action
                 :sub-group="depth > 0"
@@ -13,7 +13,7 @@
                     <v-list-item-title>
                         {{ item.title }}
                     </v-list-item-title>
-                    <v-btn icon v-bind="getLink(item)" :disabled="!item.to" plain>
+                    <v-btn icon @click.stop="goUrl(item)" :disabled="!item.to" plain>
                         <v-icon>mdi-arrow-top-right</v-icon>
                     </v-btn>
                     <v-icon :style="activeStyle(item.active)">mdi-chevron-down</v-icon>
@@ -22,7 +22,7 @@
             </v-list-group>
 
             <v-list-item v-else v-bind="getLink(item)">
-                <v-list-item-icon v-if="depth == 0">
+                <v-list-item-icon v-if="depth === 0">
                     <v-icon>{{ item.icon }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title :style="{'padding-left' : depth == 1 ? '16px' : '0px'}" >
@@ -61,6 +61,15 @@ export default {
         },
         activeStyle(active) {
             return { transform: active ? "rotate(180deg)" : "rotate(360deg)" }
+        },
+        goUrl(item) {
+            if (item.newTab) {
+                window.open(item.to, "_blank");
+            } else {
+                if (item.to != this.$route.path) {
+                    this.$router.push(item.to);
+                }
+            }
         }
     }
 }
