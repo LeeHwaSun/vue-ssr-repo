@@ -13,10 +13,10 @@
         <v-switch label="Dark Theme" :input-value="darkMode" @change="setDarkMode($event)"></v-switch>
       </v-card-text>
       <v-card-actions>
-        <v-btn block to="/login" color="primary">로그인</v-btn>
+        <v-btn block to="/login" color="primary">Login</v-btn>
       </v-card-actions>
       <v-card-actions>
-        <v-btn block to="/join" color="secondary">회원가입</v-btn>
+        <v-btn block to="/join" color="secondary">Join</v-btn>
       </v-card-actions>
     </v-card>
   </v-menu>
