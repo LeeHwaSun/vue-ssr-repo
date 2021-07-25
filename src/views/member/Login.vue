@@ -1,12 +1,10 @@
 <template>
-  <div>
-      404 Not Found
-  </div>
+  <div>로그인</div>
 </template>
 
 <script>
 export default {
-    name: "Error"
+    name: "Login",
 }
 </script>
 

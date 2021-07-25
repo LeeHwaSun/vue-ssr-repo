@@ -1,12 +1,10 @@
 <template>
-  <div>
-      404 Not Found
-  </div>
+  <div>회원가입</div>
 </template>
 
 <script>
 export default {
-    name: "Error"
+    name: "Join"
 }
 </script>
 

@@ -18,8 +18,8 @@
 <script>
 import { mapState } from 'vuex';
 import NestedMenu from './NestedMenu.vue';
-import { deepCopy } from '../../../util/lib';
-import SiteHeader from './SiteHeader.vue';
+import { deepCopy } from '../../../../util/lib';
+import SiteHeader from '../common/SiteHeader.vue';
 export default {
     components: { NestedMenu, SiteHeader },
     name : "SiteNavi",

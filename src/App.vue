@@ -8,6 +8,7 @@
       <v-app-bar-nav-icon @click="toggleDrawer" />
       <site-header></site-header>
       <v-spacer></v-spacer>
+      <site-user />
     </v-app-bar>
 
     <v-main>
@@ -19,11 +20,12 @@
 </template>
 
 <script>
-import SiteHeader from './components/layout/SiteHeader.vue';
-import SiteFooter from './components/layout/SiteFooter.vue';
-import SiteNavi from './components/layout/SiteNavi.vue';
+import SiteHeader from './components/layout/common/SiteHeader.vue';
+import SiteFooter from './components/layout/common/SiteFooter.vue';
+import SiteNavi from './components/layout/common/SiteNavi.vue';
+import SiteUser from './components/layout/user/SiteUser.vue';
 export default {
-  components: { SiteHeader, SiteFooter, SiteNavi },
+  components: { SiteHeader, SiteFooter, SiteNavi, SiteUser },
   name: 'App',
 
   data() {
