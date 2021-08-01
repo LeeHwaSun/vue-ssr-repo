@@ -5,7 +5,10 @@
               <v-toolbar-title>Join to User</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-              <sign-up-form :cbCheckId="checkId"/>
+              <sign-up-form 
+                :cbCheckId="checkId" 
+                :cbCheckEmail="checkEmail"
+              />
           </v-card-text>
       </v-card>
   </div>
@@ -17,10 +20,15 @@ import SignUpForm from '../../components/auth/SignUpForm.vue';
 export default {
     components: { SignUpForm },
     name: "Join",
+    title: "회원가입",
     methods: {
         ...mapActions('user', ['duplicateCheck']),
         async checkId(id) {
             const data = this.duplicateCheck({field: 'user_id', value: id});
+            return data;
+        },
+        async checkEmail(email) {
+            const data = this.duplicateCheck({field: 'user_email', value: email});
             return data;
         }
     }

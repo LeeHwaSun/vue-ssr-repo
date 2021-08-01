@@ -6,7 +6,8 @@
 
 <script>
 export default {
-    name: "Error"
+    name: "Error",
+    title: "에러페이지"
 }
 </script>
 

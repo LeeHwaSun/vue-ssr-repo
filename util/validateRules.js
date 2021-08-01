@@ -1,5 +1,5 @@
 const rules = {
-    max({ label, len = 3, info = null }) {
+    min({ label, len = 3, info = null }) {
         return v => !!v ? v.length >= len || info || `${label}은(는) ${len}자 이상 입력하세요.` : true;
     },
     required({ label }) {
@@ -26,8 +26,53 @@ const rules = {
         if (opt.required) {
             ruleArr.push(rules.required(opt));
         }
-        ruleArr.push(rules.max(opt));
+        ruleArr.push(rules.min(opt));
         ruleArr.push(rules.alphaNum());
+        return ruleArr;
+    },
+    name(options) {
+        const defaultOptions = {
+            label : "이름",
+            len : 2,
+            info : null,
+            required : true
+        };
+        const opt = Object.assign(defaultOptions, options);
+        const ruleArr = [];
+        if (opt.required) {
+            ruleArr.push(rules.required(opt));
+        }
+        ruleArr.push(rules.min(opt));
+        return ruleArr;
+    },
+    password(options) {
+        const defaultOptions = {
+            label : "비밀번호",
+            info : null,
+            required : true,
+            pattern: /^.*(?=^.{6,}$)(?=.*\d)(?=.*[a-zA-z])(?=.*[?!@#$]).*$/
+        };
+        const opt = Object.assign(defaultOptions, options);
+        const ruleArr = [];
+        if (opt.required) {
+            ruleArr.push(rules.required(opt));
+        }
+        ruleArr.push(rules.pattern(opt));
+        return ruleArr;  
+    },
+    email(options) {
+        const defaultOptions = {
+            label : "이메일",
+            info : null,
+            required : true,
+            pattern : /([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/
+        };
+        const opt = Object.assign(defaultOptions, options);
+        const ruleArr = [];
+        if (opt.required) {
+            ruleArr.push(rules.required(opt));
+        }
+        ruleArr.push(rules.pattern(opt));
         return ruleArr;
     }
 }
