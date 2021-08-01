@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import './plugins/axios'
 import App from './App.vue'
 import { createRouter } from './router'
 import { createStore } from './store'
@@ -8,6 +9,7 @@ import '@babel/polyfill'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import titleMixin from './mixins/title-mixin'
+import './plugins/axios'
 
 Vue.config.productionTip = false
 

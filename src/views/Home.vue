@@ -20,6 +20,11 @@
       <v-btn @click="notifyConfirm">Confirm</v-btn>
       <v-btn @click="notifyPrompt">Prompt</v-btn>
     </div>
+    <h1>Axios 테스트</h1>
+    <div>
+      <v-btn @click="axiosTest1">TEST</v-btn>
+      <v-btn @click="axiosTest2">ERROR</v-btn>
+    </div>
   </div>
 </template>
 
@@ -76,6 +81,14 @@
           { width: 200 }
         );
         console.log(res);
+      },
+      async axiosTest1() {
+        const result = await this.$axios.get('/api/user/test');
+        console.log(result);
+      },
+      async axiosTest2() {
+        const result = await this.$axios.get('/api/err/test');
+        console.log(result);
       }
     }
   }
