@@ -1,5 +1,5 @@
 require('dotenv').config();
-const mysl = require("mysql2");
+const mysql = require("mysql2");
 
 function createDatabase() {
     let instance = null;

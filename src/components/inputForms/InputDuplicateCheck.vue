@@ -78,12 +78,13 @@ export default {
             this.errMsg = "";
             this.successMsg = "";
             const data = await this.cbCheck(this.value);
-            if (data.cnt) {
-                this.errMsg = `중복된 ${this.$attrs.label} 입니다.`;
-                this.isCheck = false;
-            } else {
+            console.log(data);
+            if (data && data.cnt === 0) {
                 this.successMsg = `사용 가능한 ${this.$attrs.label} 입니다.`;
                 this.isCheck = true;
+            } else {
+                this.errMsg = `중복된 ${this.$attrs.label} 입니다.`;
+                this.isCheck = false;
             }
             this.loading = false;
         },
