@@ -62,7 +62,12 @@
         class="mb-5"
         :rules="rules.phone()"
       />
-      <v-btn type="submit" block color="primary" class="mt-5">Join</v-btn>
+      <input-post 
+        :zipcode.sync="form.user_zip"
+        :addr1.sync="form.user_addr1"
+        :addr2.sync="form.user_addr2"
+      />
+      <v-btn type="submit" block color="primary" class="mt-5" :loading="isLoading">Join</v-btn>
   </v-form>
 </template>
 
@@ -72,11 +77,23 @@ import InputPassword from '../inputForms/InputPassword.vue'
 import InputDate from '../inputForms/InputDate.vue'
 import InputRadio from '../inputForms/InputRadio.vue'
 import InputPhoneNumber from '../inputForms/InputPhoneNumber.vue'
+import InputPost from '../inputForms/InputPost.vue'
 import validateRules from '../../../util/validateRules'
 export default {
-    components: { InputDuplicateCheck, InputPassword, InputDate, InputRadio, InputPhoneNumber },
+    components: { 
+      InputDuplicateCheck, 
+      InputPassword, 
+      InputDate, 
+      InputRadio, 
+      InputPhoneNumber, 
+      InputPost 
+    },
     name: "SignUpForm",
     props: {
+        isLoading : {
+          type : Boolean,
+          required : true,
+        },
         cbCheckId : {
             type: Function,
             default: null,
@@ -90,16 +107,16 @@ export default {
         return {
             valid: true,
             form: {
-                user_id: "test1111",
+                user_id: "lhs10270",
                 user_pwd: "{cx2243bw?!}",
                 user_name: "이화선",
                 user_birth: "1989-02-26",
                 user_gender: "M",
                 user_email: "op_instinct@naver.com",
-                user_phone: "",
-                user_zip: "",
-                user_addr1: "",
-                user_addr2: "",
+                user_phone: "010-9788-1027",
+                user_zip: "11738",
+                user_addr1: "경기 의정부시 동일로466번길 3 (신곡동, 서해아파트)",
+                user_addr2: "105동 703호",
             },
             genderItems: [
               { label: "남자", value: "M" },
@@ -118,7 +135,7 @@ export default {
             if (!this.valid) return;
             if (!this.$refs.id.validate()) return;
             if (!this.$refs.email.validate()) return;
-            console.log(this.form);
+            this.$emit('onSave', this.form);
         }
     }
 }

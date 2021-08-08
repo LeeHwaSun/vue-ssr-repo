@@ -24,7 +24,6 @@ export default {
     },
     methods: {
         onInput(event) {
-            //console.log(event.target.value);
             const val = this.autoDash(event.target.value);
             this.$emit('input', val);
         },
@@ -55,11 +54,9 @@ export default {
             }
 
             const matches = pattern.exec(val);
-            console.log(matches);
             let rVal = matches[1];
             rVal += matches[2] ? '-' + matches[2] : "";
             rVal += matches[3] ? '-' + matches[3] : "";
-            console.log(rVal);
             return rVal;
         }
     }

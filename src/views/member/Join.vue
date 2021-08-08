@@ -8,6 +8,8 @@
               <sign-up-form 
                 :cbCheckId="checkId" 
                 :cbCheckEmail="checkEmail"
+                @onSave="save"
+                :isLoading="isLoading"
               />
           </v-card-text>
       </v-card>
@@ -21,6 +23,11 @@ export default {
     components: { SignUpForm },
     name: "Join",
     title: "회원가입",
+    data() {
+        return {
+            isLoading : false,
+        }
+    },
     methods: {
         ...mapActions('user', ['duplicateCheck']),
         async checkId(id) {
@@ -30,6 +37,12 @@ export default {
         async checkEmail(email) {
             const data = this.duplicateCheck({field: 'user_email', value: email});
             return data;
+        },
+        async save(form) {
+            this.isLoading = true;
+            setTimeout(() => {
+                this.isLoading = false;
+            }, 1000);
         }
     }
 }

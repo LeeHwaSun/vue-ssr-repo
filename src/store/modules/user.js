@@ -1,3 +1,4 @@
+import { join } from "core-js/core/array";
 import Vue from "vue";
 
 export const state = () => ({
@@ -18,5 +19,8 @@ export const actions = {
         const { $axios } = Vue.prototype;
         const data = await $axios.get(`/api/user/duplicateCheck/${field}/${value}`);
         return data;
+    },
+    async createUser(ctx, form) {
+        console.log('user ', form);
     }
 };

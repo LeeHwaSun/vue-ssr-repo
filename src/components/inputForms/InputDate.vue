@@ -66,6 +66,7 @@ export default {
             this.modal = false;
         },
         dayFormat(day) {
+            if (!this.modal) return;
             const arr = day.split("-");
             return Number(arr[arr.length - 1]);
         }

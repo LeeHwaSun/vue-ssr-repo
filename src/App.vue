@@ -25,7 +25,12 @@ import SiteFooter from './components/layout/common/SiteFooter.vue';
 import SiteNavi from './components/layout/common/SiteNavi.vue';
 import SiteUser from './components/layout/user/SiteUser.vue';
 export default {
-  components: { SiteHeader, SiteFooter, SiteNavi, SiteUser },
+  components: { 
+    SiteHeader, 
+    SiteFooter, 
+    SiteNavi, 
+    SiteUser 
+  },
   name: 'App',
 
   data() {
