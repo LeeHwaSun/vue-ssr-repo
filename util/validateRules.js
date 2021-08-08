@@ -48,22 +48,24 @@ const rules = {
     password(options) {
         const defaultOptions = {
             label : "비밀번호",
-            info : null,
+            info : "비밀번호는 영어, 숫자, 특수문자(?!@#${})를 포함하여 입력해주세요.",
+            len : 6,
             required : true,
-            pattern: /^.*(?=^.{6,}$)(?=.*\d)(?=.*[a-zA-z])(?=.*[?!@#$]).*$/
+            pattern: /^.*(?=^.{6,}$)(?=.*\d)(?=.*[a-zA-z])(?=.*[?!@#$\{\}]).*$/
         };
         const opt = Object.assign(defaultOptions, options);
         const ruleArr = [];
         if (opt.required) {
             ruleArr.push(rules.required(opt));
         }
+        ruleArr.push(rules.min(opt));
         ruleArr.push(rules.pattern(opt));
         return ruleArr;  
     },
     email(options) {
         const defaultOptions = {
             label : "이메일",
-            info : null,
+            info : "이메일은 형식에 맞게 입력하세요.(예 : aaa@example.com)",
             required : true,
             pattern : /([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/
         };
@@ -74,7 +76,37 @@ const rules = {
         }
         ruleArr.push(rules.pattern(opt));
         return ruleArr;
-    }
+    },
+    date(options) {
+        const defaultOptions = {
+            label : "날짜",
+            info : 'YYYY-MM-DD 형식의 맞게 입력하세요.',
+            required : true,
+            pattern : /^\d{4}-\d{2}-\d{2}$/
+        };
+        const opt = Object.assign(defaultOptions, options);
+        const ruleArr = [];
+        if (opt.required) {
+            ruleArr.push(rules.required(opt));
+        }
+        ruleArr.push(rules.pattern(opt));
+        return ruleArr;
+    },
+    phone(options) {
+        const defaultOptions = {
+            label : "전화번호",
+            info : null,
+            required : true,
+            pattern : /(^02.{0}|^01.{1}|[0-9]{3}|[0-9]{4})-([0-9]+)-([0-9]{4})/
+        };
+        const opt = Object.assign(defaultOptions, options);
+        const ruleArr = [];
+        if (opt.required) {
+            ruleArr.push(rules.required(opt));
+        }
+        ruleArr.push(rules.pattern(opt));
+        return ruleArr;
+    },
 }
 
 module.exports = rules;
