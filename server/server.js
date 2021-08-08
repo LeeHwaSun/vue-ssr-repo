@@ -9,6 +9,10 @@ const app = express();
 const port = process.env.VUE_APP_SERVER_PORT || 3000;
 const webServer = http.createServer(app);
 
+// Body Parser
+app.use(express.json());
+app.use(express.urlencoded( {extended : true} ));
+
 // 정적 폴더
 app.use(express.static(path.join(__dirname, "../dist")));
 

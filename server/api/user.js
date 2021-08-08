@@ -12,4 +12,10 @@ router.get('/duplicateCheck/:field/:value', async (req, res) => {
     res.json(result);
 });
 
+// 회원 가입
+router.post('/', async (req, res) => {
+    const result = await modelCall(userModel.createUser, req);
+    res.json(result);
+});
+
 module.exports = router;

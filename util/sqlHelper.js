@@ -18,6 +18,20 @@ const sqlHelper = {
         }
 
         return { query, values };
+    },
+    Insert(table, data) {
+        let query = `INSERT INTO ${table} ({1}) VALUES ({2})`;
+        const fields = Object.keys(data);
+        const prepare = new Array(fields.length).fill('?').join(', ');
+        const values = [];
+        for (const field of fields) {
+            values.push(data[field]);
+        }
+
+        query = query.replace('{1}', fields.join(', '));
+        query = query.replace('{2}', prepare);
+
+        return { query, values };
     }
 };
 

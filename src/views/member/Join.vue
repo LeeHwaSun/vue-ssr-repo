@@ -29,7 +29,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions('user', ['duplicateCheck']),
+        ...mapActions('user', ['duplicateCheck', 'createUser']),
         async checkId(id) {
             const data = this.duplicateCheck({field: 'user_id', value: id});
             return data;
@@ -40,9 +40,8 @@ export default {
         },
         async save(form) {
             this.isLoading = true;
-            setTimeout(() => {
-                this.isLoading = false;
-            }, 1000);
+            const data = await this.createUser(form);
+            this.isLoading = false;
         }
     }
 }

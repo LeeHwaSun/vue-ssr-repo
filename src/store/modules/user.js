@@ -1,4 +1,3 @@
-import { join } from "core-js/core/array";
 import Vue from "vue";
 
 export const state = () => ({
@@ -21,6 +20,8 @@ export const actions = {
         return data;
     },
     async createUser(ctx, form) {
-        console.log('user ', form);
+        const { $axios } = Vue.prototype;
+        const data = await $axios.post(`/api/user/`, form);
+        return data;
     }
 };

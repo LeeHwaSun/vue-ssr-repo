@@ -17,7 +17,10 @@ const lib = {
             console.trace(e);
             return { err : e.message }
         }
-    } 
+    },
+    getIp(req) {
+        return req.ip.replace('::ffff:', '');
+    }
 }
 
 module.exports = lib;
