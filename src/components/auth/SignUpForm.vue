@@ -44,8 +44,23 @@
         v-model="form.user_birth"
         label="생년월일"
         prepend-icon="mdi-calendar"
-        :rules="rules.date( { label:'생년월일'}  )"
+        :rules="rules.date( { label:'생년월일' }  )"
         class="mb-5"
+      />
+      <input-radio 
+        v-model="form.user_gender"
+        prepend-icon="mdi-gender-male-female"
+        class="mb-5"
+        :items="genderItems"
+        row
+        :rules="[rules.required({ label: '성별' })]"
+      />
+      <input-phone-number 
+        label="전화번호"
+        prepend-icon="mdi-phone"
+        v-model="form.user_phone"
+        class="mb-5"
+        :rules="rules.phone()"
       />
       <v-btn type="submit" block color="primary" class="mt-5">Join</v-btn>
   </v-form>
@@ -55,9 +70,11 @@
 import InputDuplicateCheck from '../inputForms/InputDuplicateCheck.vue'
 import InputPassword from '../inputForms/InputPassword.vue'
 import InputDate from '../inputForms/InputDate.vue'
+import InputRadio from '../inputForms/InputRadio.vue'
+import InputPhoneNumber from '../inputForms/InputPhoneNumber.vue'
 import validateRules from '../../../util/validateRules'
 export default {
-    components: { InputDuplicateCheck, InputPassword, InputDate },
+    components: { InputDuplicateCheck, InputPassword, InputDate, InputRadio, InputPhoneNumber },
     name: "SignUpForm",
     props: {
         cbCheckId : {
@@ -76,15 +93,19 @@ export default {
                 user_id: "test1111",
                 user_pwd: "{cx2243bw?!}",
                 user_name: "이화선",
-                user_birth: "",
-                user_gender: "",
+                user_birth: "1989-02-26",
+                user_gender: "M",
                 user_email: "op_instinct@naver.com",
                 user_phone: "",
                 user_zip: "",
                 user_addr1: "",
                 user_addr2: "",
             },
-            confirmPw : "",
+            genderItems: [
+              { label: "남자", value: "M" },
+              { label: "여자", value: "F" },
+            ],
+            confirmPw : "{cx2243bw?!}",
         }
     },
     computed: {

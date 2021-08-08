@@ -97,7 +97,7 @@ const rules = {
             label : "전화번호",
             info : null,
             required : true,
-            pattern : /(^02.{0}|^01.{1}|[0-9]{3}|[0-9]{4})-([0-9]+)-([0-9]{4})/
+            pattern : /^(\d{2,3}-)?\d{2,4}-\d{4}$/
         };
         const opt = Object.assign(defaultOptions, options);
         const ruleArr = [];
