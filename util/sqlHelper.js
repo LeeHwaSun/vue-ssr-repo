@@ -32,6 +32,29 @@ const sqlHelper = {
         query = query.replace('{2}', prepare);
 
         return { query, values };
+    },
+    Update(table, data, where) {
+        let query = `UPDATE ${table} SET {1} WHERE {2}`;
+        const keys = Object.keys(data);
+        const sets = [];
+        const values = [];
+        for (const key of keys) {
+            sets.push(`${key}=?`);
+            values.push(data[key]);
+        }
+        query = query.replace('{1}', sets.join(', '));
+
+        const whereKeys = Object.keys(where);
+        const wheres = [];
+        for (const key of whereKeys) {
+            wheres.push(`${key}=?`);
+            values.push(where[key]);
+        }
+
+        query = query.replace('{2}', wheres.join(' AND '));
+
+        return { query, values };
+
     }
 };
 

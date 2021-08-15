@@ -107,22 +107,22 @@ export default {
         return {
             valid: true,
             form: {
-                user_id: "lhs10270",
-                user_pwd: "{cx2243bw?!}",
-                user_name: "이화선",
-                user_birth: "1989-02-26",
-                user_gender: "M",
-                user_email: "op_instinct@naver.com",
-                user_phone: "010-9788-1027",
-                user_zip: "11738",
-                user_addr1: "경기 의정부시 동일로466번길 3 (신곡동, 서해아파트)",
-                user_addr2: "105동 703호",
+                user_id: "",
+                user_pwd: "",
+                user_name: "",
+                user_birth: "",
+                user_gender: "",
+                user_email: "",
+                user_phone: "",
+                user_zip: "",
+                user_addr1: "",
+                user_addr2: "",
             },
             genderItems: [
               { label: "남자", value: "M" },
               { label: "여자", value: "F" },
             ],
-            confirmPw : "{cx2243bw?!}",
+            confirmPw : "",
         }
     },
     computed: {

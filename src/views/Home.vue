@@ -34,9 +34,6 @@
     data() {
       return {
         title : "메인",
-        zip : '',
-        addr1 : '',
-        addr2 : ''
       }
     },
     title() {
