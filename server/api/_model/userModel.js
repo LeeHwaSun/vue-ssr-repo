@@ -6,6 +6,7 @@ const { LV } = require('../../../util/level');
 const moment = require('../../../util/moment');
 const { getIp } = require('../../../util/lib');
 
+
 function clearUserField(user) {
     delete user.user_pwd;
     user.user_create_at = moment(user.user_create_at).format('LT');
@@ -47,6 +48,9 @@ const userModel = {
         return row;
     },
     async createUser(req) {
+        //console.log("createUser :", req.body);
+        //console.log("image :", req.files);
+
         const at = moment().format('LT');
         const ip = getIp(req);
         const payload = {
@@ -57,6 +61,16 @@ const userModel = {
             user_update_at : at,
             user_update_ip : ip
         };
+
+        // 이미지 업로드 처리
+        if (req.files && req.files.user_img) {
+            req.files.user_img.mv(`${USER_PROFILE_PATH}/${payload.user_id}.jpg`, (err) => {
+                if (err) {
+                    console.log("USER IMAGE UPLOAD ERROR ", err);
+                }
+            });
+        }
+        delete payload.user_img;
 
         payload.user_pwd = jwt.generatePassword(payload.user_pwd);
         const sql = sqlHelper.Insert(

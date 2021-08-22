@@ -6,7 +6,9 @@ export const state = () => ({
 });
 
 export const mutations = {
-
+    SET_USER(state, user) {
+        state.user = user;
+    }
 };
 
 export const getters = {
@@ -27,6 +29,9 @@ export const actions = {
     async loginUserLocal({ commit }, form) {
         const { $axios } = Vue.prototype;
         const data = await $axios.post(`/api/user/loginUserLocal`, form);
+        if (data && data.user) {
+            commit('SET_USER', data.user);
+        }
         console.log('loginUserLocal ', data);
         return data;
     }

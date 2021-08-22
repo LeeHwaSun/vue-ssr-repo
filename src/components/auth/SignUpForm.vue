@@ -67,6 +67,13 @@
         :addr1.sync="form.user_addr1"
         :addr2.sync="form.user_addr2"
       />
+      <v-file-input 
+        label="회원이미지"
+        prepend-icon="mdi-account-box"
+        v-model="form.user_img"
+        accept="image/jpg,image/jpeg,image/png"
+        class="mb-5"
+      />
       <v-btn type="submit" block color="primary" class="mt-5" :loading="isLoading">Join</v-btn>
   </v-form>
 </template>
@@ -107,22 +114,23 @@ export default {
         return {
             valid: true,
             form: {
-                user_id: "",
-                user_pwd: "",
-                user_name: "",
-                user_birth: "",
-                user_gender: "",
-                user_email: "",
-                user_phone: "",
-                user_zip: "",
-                user_addr1: "",
-                user_addr2: "",
+                user_id: "hamohamo7",
+                user_pwd: "{cx2243bw?!}",
+                user_name: "이화선",
+                user_birth: "1989-02-26",
+                user_gender: "M",
+                user_email: "op_instinct@naver.com",
+                user_phone: "010-9788-1027",
+                user_zip: "11783",
+                user_addr1: "경기 의정부시 동일로466번길 3 (신곡동, 서해아파트)",
+                user_addr2: "105동 703호",
+                user_img : null
             },
             genderItems: [
               { label: "남자", value: "M" },
               { label: "여자", value: "F" },
             ],
-            confirmPw : "",
+            confirmPw : "{cx2243bw?!}",
         }
     },
     computed: {
@@ -135,7 +143,12 @@ export default {
             if (!this.valid) return;
             if (!this.$refs.id.validate()) return;
             if (!this.$refs.email.validate()) return;
-            this.$emit('onSave', this.form);
+            const formData = new FormData();
+            const keys = Object.keys(this.form);
+            for (const key of keys) {
+              formData.append(key, this.form[key]);
+            }
+            this.$emit('onSave', formData);
         }
     }
 }

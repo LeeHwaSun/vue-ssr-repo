@@ -43,7 +43,8 @@ export default {
             const data = await this.createUser(form);
             this.isLoading = false;
             if (data) {
-                this.$toast.info(`${form.user_name}님 회원가입 하셨습니다.`);
+                const user_name = form.get('user_name');
+                this.$toast.info(`${user_name}님 회원가입 하셨습니다.`);
                 this.$router.push('/login');
             }
             
