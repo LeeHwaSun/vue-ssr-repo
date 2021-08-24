@@ -19,7 +19,8 @@ const rules = {
             label : "아이디",
             len : 3,
             info : null,
-            required : true
+            required : true,
+            pattern : /^[a-zA-Z0-9_-]+$/
         };
         const opt = Object.assign(defaultOptions, options);
         const ruleArr = [];
@@ -27,7 +28,7 @@ const rules = {
             ruleArr.push(rules.required(opt));
         }
         ruleArr.push(rules.min(opt));
-        ruleArr.push(rules.alphaNum());
+        ruleArr.push(rules.pattern(opt));
         return ruleArr;
     },
     name(options) {
