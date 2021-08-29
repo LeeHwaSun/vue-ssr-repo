@@ -45,7 +45,6 @@ router.post('/loginUserLocal', async (req, res) => {
 
 // 인증 처리
 router.get('/auth', (req, res) => {
-    console.log('auth :', req.user);
     res.json(req.user || false);
 })
 

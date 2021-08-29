@@ -46,19 +46,35 @@ module.exports = (app) => {
         }
     ));
 
-    app.use((req, res, next) => {
-        passport.authenticate('jwt', (err, user) => {
-            if (user) {
-                // 로그인 처리
-                console.log("user :", user);
-                req.login(user, { session : false }, (err) => {});
-            } else {
-                // 로그아웃 처리
-                try {
-                    req.logout();
-                } catch (e) {}
-            }
+    app.use(async (req, res, next) => {
+        if (req.headers.authorization) {
+            passport.authenticate('jwt', (err, user) => {
+                if (user) {
+                    // 로그인 처리
+                    req.login(user, { session : false }, (err) => {});
+                } else {
+                    // 로그아웃 처리
+                    try {
+                        req.logout();
+                    } catch (e) {}
+                }
+                next();
+            })(req, res, next);
+        } else if (req.cookies.token) {
+            try {
+                // 인증
+                const payload = jwt.verify(req.cookies.token);                
+                const { user_id } = payload;
+                const user = await userModel.getUserBy({ user_id });
+                if (!user) {
+                    throw new Error('회원 토큰이 유효하지 않습니다.');
+                }
+                req.login(user, { session : false }, (err) => { });
+
+            } catch (e) {}
             next();
-        })(req, res, next);
+        } else {
+            next();
+        }
     });
 }

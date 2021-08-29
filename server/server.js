@@ -75,6 +75,7 @@ app.get('*', (req, res) => {
 		url : req.url,
 		title : 'Vue SSR App',
 		metas : `<!-- inject more metas -->`,
+		user : req.user
 	};
 
 	const stream = renderer.renderToStream(ctx);

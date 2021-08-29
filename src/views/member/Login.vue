@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import SiteHeader from '../../components/layout/common/SiteHeader.vue';
 import SignInForm from '../../components/auth/SignInForm.vue';
 export default {
@@ -42,13 +42,21 @@ export default {
       isLoading: false,
     }
   },
+  computed : {
+    ...mapState({
+      user : state => state.user.user,
+    }),
+  },
   methods: {
     ...mapActions('user', ['loginUserLocal']),
     async login(form) {
       this.isLoading = true;
       const data = await this.loginUserLocal(form);
       this.isLoading = false;
-      //this.$router.push('/');
+      if (data) {
+        this.$router.push('/');
+        this.$toast.info(`${this.user.user_name}님 환영합니다!!!`);
+      }
     }
   }
 }

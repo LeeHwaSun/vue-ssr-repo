@@ -41,6 +41,12 @@ export const actions = {
             commit('SET_USER', data.user);
             VueCookies.set('token', data.token);
         }
-        return data;
+        return !!data;
+    },
+    async logout({ commit, state }) {
+        const user_name = state.user.user_name;
+        commit("SET_USER", null);
+        VueCookies.remove('token');
+        return user_name;
     }
 };

@@ -25,7 +25,7 @@ const token = {
     },
     verify(token) {
         try {
-            return jwt.verify(token. SECRET_KEY);
+            return jwt.verify(token, SECRET_KEY);
         } catch (e) {
             return { error : e.message };
         }
