@@ -2,6 +2,7 @@
 
 import Vue from 'vue';
 import axios from "axios";
+import VueCookies from 'vue-cookies';
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -23,6 +24,12 @@ const _axios = axios.create(config);
 // Request Interceptor
 _axios.interceptors.request.use(
   function(config) {
+    // 토큰이 있으면 request header에 토큰을 삽입하여 보낸다.
+    if (VueCookies.isKey('token')) {
+      //config.headers.Authorization = VueCookies.get('token');
+      config.headers.Authorization = "Bearer " + VueCookies.get('token');
+    }
+
     const { $Progress } = Vue.prototype;
     if ( $Progress ) {
       $Progress.start();
@@ -64,24 +71,6 @@ _axios.interceptors.response.use(
   }
 );
 
-const Plugin = {};
-
-Plugin.install = function(Vue, options) {
-  Vue.axios = _axios;
-  Object.defineProperties(Vue.prototype, {
-    axios: {
-      get() {
-        return _axios;
-      }
-    },
-    $axios: {
-      get() {
-        return _axios;
-      }
-    },
-  });
-};
-
-Vue.use(Plugin)
+Vue.prototype.$axios = _axios;
 
 export default _axios;

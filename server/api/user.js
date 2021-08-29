@@ -36,14 +36,17 @@ router.post('/loginUserLocal', async (req, res) => {
                     const data = userModel.loginUser(req);
                     user.user_login_at = data.user_login_at;
                     user.user_login_ip = data.user_login_ip;
-                    if (fs.existsSync(`${USER_PROFILE_PATH}/${user.user_id}.jpg`)) {
-                        user.user_img = true;
-                    }
                     res.json({ user, token });
                 }
             });
         }
     })(req, res);
 });
+
+// 인증 처리
+router.get('/auth', (req, res) => {
+    console.log('auth :', req.user);
+    res.json(req.user || false);
+})
 
 module.exports = router;

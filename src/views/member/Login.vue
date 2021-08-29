@@ -48,8 +48,7 @@ export default {
       this.isLoading = true;
       const data = await this.loginUserLocal(form);
       this.isLoading = false;
-      console.log('loginUserLocal data ', data);
-      this.$router.push('/');
+      //this.$router.push('/');
     }
   }
 }

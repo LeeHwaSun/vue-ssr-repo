@@ -3,13 +3,7 @@
   <v-menu v-else offset-y>
     <template v-slot:activator="{on, attrs}">
       <v-btn icon v-on="on" v-bind="attrs">
-        <v-avatar color="accent" size="32">
-          <template v-if="user">
-            <v-img v-if="user.user_img" :src="`/upload/userProfile/${user.user_id}.jpg?w=32&h=32`"></v-img>
-            <div v-else>{{ user.user_name[0] }}</div>
-          </template>
-          <v-icon v-else>mdi-account</v-icon>
-        </v-avatar>
+        <display-avatar :user="user" />
       </v-btn>
     </template>
     <v-card>
@@ -17,20 +11,10 @@
         <v-switch label="Dark Theme" :input-value="darkMode" @change="setDarkMode($event)"></v-switch>
       </v-card-text>
       <template v-if="user">
-        <v-card-actions>
-          <v-btn block color="primary">Info</v-btn>
-        </v-card-actions>
-        <v-card-actions>
-          <v-btn block color="secondary">Logout</v-btn>
-        </v-card-actions>
+        <user-menu />
       </template>
       <template v-else>
-        <v-card-actions>
-          <v-btn block to="/login" color="primary">Login</v-btn>
-        </v-card-actions>
-        <v-card-actions>
-          <v-btn block to="/join" color="secondary">Join</v-btn>
-        </v-card-actions>
+        <no-user-menu />
       </template>
     </v-card>
   </v-menu>
@@ -38,7 +22,11 @@
 
 <script>
 import { mapState } from 'vuex';
+import DisplayAvatar from '../user/DisplayAvatar.vue';
+import UserMenu from '../user/UserMenu.vue';
+import NoUserMenu from '../user/NoUserMenu.vue';
 export default {
+  components: { DisplayAvatar, UserMenu, NoUserMenu },
   name : 'SiteUser',
   data() {
     return {
