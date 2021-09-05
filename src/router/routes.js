@@ -1,7 +1,7 @@
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
-import Login from '../views/member/Login.vue'
-import Join from '../views/member/Join.vue'
+import Login from '../views/user/Login.vue'
+import Join from '../views/user/Join.vue'
 import Error from '../views/Error.vue'
 
 const routes = [
@@ -19,13 +19,13 @@ const routes = [
     {
         path: '/login',
         name: 'NoAuthLogin',
-        //component: () => import(/* webpackChunkName: "Login" */ '../views/member/Login.vue')
+        //component: () => import(/* webpackChunkName: "Login" */ '../views/user/Login.vue')
         component: Login
     },
     {
         path: '/join',
         name: 'NoAuthJoin',
-        //component: () => import(/* webpackChunkName: "Join" */ '../views/member/Join.vue')
+        //component: () => import(/* webpackChunkName: "Join" */ '../views/user/Join.vue')
         component: Join
     },
     {

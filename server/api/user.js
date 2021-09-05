@@ -5,10 +5,6 @@ const userModel = require('./_model/userModel');
 const jwt = require('../plugins/jwt');
 const fs = require('fs');
 
-router.get('/test', (req, res) => {
-    res.json('test connection');
-});
-
 // 중복 체크
 router.get('/duplicateCheck/:field/:value', async (req, res) => {
     const result = await modelCall(userModel.duplicateCheck, req.params);
@@ -36,6 +32,7 @@ router.post('/loginUserLocal', async (req, res) => {
                     const data = userModel.loginUser(req);
                     user.user_login_at = data.user_login_at;
                     user.user_login_ip = data.user_login_ip;
+                    res.cookie('token', token, { httpOnly : true });
                     res.json({ user, token });
                 }
             });
@@ -45,7 +42,16 @@ router.post('/loginUserLocal', async (req, res) => {
 
 // 인증 처리
 router.get('/auth', (req, res) => {
-    res.json(req.user || false);
+    const user = req.user || null;
+    const token = req.cookies.token || null;
+    res.json({ user, token });
+
 })
+
+// 로그아웃
+router.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json(true);
+});
 
 module.exports = router;
