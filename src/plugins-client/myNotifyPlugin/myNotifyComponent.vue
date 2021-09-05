@@ -9,7 +9,7 @@
                     <v-icon v-if="options.icon" large class="mr-4" :color="options.iconColor">
                         {{ options.icon }}
                     </v-icon>
-                    {{ content }}
+                    <span v-html="content"></span>
                 </div>
                 <v-form v-if="options.type === 'prompt'" v-model="valid" ref="form" lazy-validation>
                     <v-text-field v-model="text" :rules="[ v => !!v || '필수 입력입니다.',]" ></v-text-field>

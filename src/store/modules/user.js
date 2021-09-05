@@ -1,4 +1,5 @@
 import Vue from "vue";
+import qs from 'qs';
 
 export const state = () => ({
     user : null,
@@ -53,5 +54,17 @@ export const actions = {
         commit("SET_USER", null);
         commit('SET_TOKEN', null);
         return user_name;
+    },
+    async findIDLocal(ctx, form) {
+        const { $axios } = Vue.prototype;
+        const query = qs.stringify(form);
+        const data = await $axios.get(`/api/user/findID?${query}`);
+        return data;
+    },
+    async findPasswordLocal(ctx, form) {
+        const { $axios } = Vue.prototype;
+        const query = qs.stringify(form);
+        const data = await $axios.get(`/api/user/findPassword?${query}`);
+        return data;
     }
 };

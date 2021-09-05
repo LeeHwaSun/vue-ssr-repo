@@ -54,4 +54,16 @@ router.get('/logout', (req, res) => {
     res.json(true);
 });
 
+// 아이디 찾기
+router.get('/findID', async (req, res) => {
+    const result = await modelCall(userModel.findID, req.query);
+    res.json(result);
+});
+
+// 비밀번호 찾기
+router.get('/findPassword', async (req, res) => {
+    const result = await modelCall(userModel.findPassword, req);
+    res.json(result);
+});
+
 module.exports = router;

@@ -14,10 +14,14 @@
         <v-card-text>
           <v-tabs-items v-model="tabs">
             <v-tab-item>
-              <sign-in-form @save="login" :isLoading="isLoading"/>
+              <sign-in-form @save="login" :isLoading="isLoading" />
             </v-tab-item>
-            <v-tab-item>{{ tabs }} Find ID</v-tab-item>
-            <v-tab-item>{{ tabs }} Find Password</v-tab-item>
+            <v-tab-item>
+              <find-id-form @save="findId" :isLoading="isLoading" />
+            </v-tab-item>
+            <v-tab-item>
+              <find-password-form @save="findPassword" :isLoading="isLoading" />
+            </v-tab-item>
           </v-tabs-items>
         </v-card-text>
         <v-card-text class="mt-n4">
@@ -31,13 +35,15 @@
 import { mapActions, mapState } from 'vuex';
 import SiteHeader from '../../components/layout/common/SiteHeader.vue';
 import SignInForm from '../../components/auth/SignInForm.vue';
+import FindIdForm from '../../components/auth/FindIdForm.vue';
+import FindPasswordForm from '../../components/auth/FindPasswordForm.vue';
 export default {
-  components : { SiteHeader, SignInForm },
+  components : { SiteHeader, SignInForm, FindIdForm, FindPasswordForm },
   name: "Login",
   title: "로그인",
   data() {
     return {
-      tabs : 0,
+      tabs : parseInt(this.$route.query.tab) || 0,
       items : ['Login', 'Find ID', 'Find Password'],
       isLoading: false,
     }
@@ -48,7 +54,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('user', ['loginUserLocal']),
+    ...mapActions('user', ['loginUserLocal', 'findIDLocal', 'findPasswordLocal']),
     async login(form) {
       this.isLoading = true;
       const data = await this.loginUserLocal(form);
@@ -56,6 +62,25 @@ export default {
       if (data) {
         this.$router.push('/');
         this.$toast.info(`${this.user.user_name}님 환영합니다!!!`);
+      }
+    },
+    async findId(form) {
+      this.isLoading = true;
+      const data = await this.findIDLocal(form);
+      this.isLoading = false;
+      if (data && data.user_id) {
+        await this.$myNotify.alert(`<span style="font-size:17px;">아이디는 [ <b>${data.user_id}</b> ] 입니다.</span>`, "FIND ID");
+        this.tabs = 0;
+
+      }
+    },
+    async findPassword(form) {
+      this.isLoading = true;
+      const data = await this.findPasswordLocal(form);
+      this.isLoading = false;
+      if (data && data.user_name) {
+        this.$toast.info(`${data.user_name}님 ${form.user_email}로 이메일을 발송하였습니다.`);
+        this.tabs = 0;
       }
     }
   }
