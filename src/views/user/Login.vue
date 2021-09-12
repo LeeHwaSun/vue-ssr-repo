@@ -25,6 +25,9 @@
           </v-tabs-items>
         </v-card-text>
         <v-card-text class="mt-n4">
+          <v-btn @click="loginGoogle" block color="secondary">Google Login</v-btn>
+        </v-card-text>
+        <v-card-text class="mt-n4">
           <v-btn to="/join" block>Join to User</v-btn>
         </v-card-text>
     </v-card>
@@ -32,13 +35,17 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import SiteHeader from '../../components/layout/common/SiteHeader.vue';
 import SignInForm from '../../components/auth/SignInForm.vue';
 import FindIdForm from '../../components/auth/FindIdForm.vue';
 import FindPasswordForm from '../../components/auth/FindPasswordForm.vue';
 export default {
-  components : { SiteHeader, SignInForm, FindIdForm, FindPasswordForm },
+  components : { 
+    SiteHeader, 
+    SignInForm, 
+    FindIdForm, 
+    FindPasswordForm },
   name: "Login",
   title: "로그인",
   data() {
@@ -55,6 +62,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['loginUserLocal', 'findIDLocal', 'findPasswordLocal']),
+    ...mapMutations('user', ['SET_USER', 'SET_TOKEN']),
     async login(form) {
       this.isLoading = true;
       const data = await this.loginUserLocal(form);
@@ -70,8 +78,9 @@ export default {
       this.isLoading = false;
       if (data && data.user_id) {
         await this.$myNotify.alert(`<span style="font-size:17px;">아이디는 [ <b>${data.user_id}</b> ] 입니다.</span>`, "FIND ID");
+        form.user_name = '';
+        form.user_email = '';
         this.tabs = 0;
-
       }
     },
     async findPassword(form) {
@@ -80,7 +89,30 @@ export default {
       this.isLoading = false;
       if (data && data.user_name) {
         this.$toast.info(`${data.user_name}님 ${form.user_email}로 이메일을 발송하였습니다.`);
+        form.user_id = '';
+        form.user_email = '';
         this.tabs = 0;
+      }
+    },
+    async loginGoogle() {
+      const childWindow = window.open(
+        "/api/user/loginGoogle",
+        "googleLoginPopup",
+        "top=10, left=10, width=500, height=600, status=no, menubar=no, toolbar=no, resizeable=no"
+      );
+
+      if (!window.onGoogleCallback) {
+        window.onGoogleCallback = this.googleLoginCallback;
+      }
+    },
+    googleLoginCallback(payload) {
+      if (payload.err) {
+        this.$toast.err(payload.err);
+      } else {
+        this.SET_USER(payload.user);
+        this.SET_TOKEN(payload.token);
+        this.$router.push('/');
+        this.$toast.info(`${this.user.user_name}님 환영합니다!!!`);
       }
     }
   }

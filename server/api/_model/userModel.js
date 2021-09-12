@@ -162,6 +162,89 @@ const userModel = {
         }
 
         return user;
+    },
+    async modifyPassword(data) {
+        // 유효시간이 경과한 데이터 삭제
+        const delBeforeSQL = `DELETE FROM ${TABLE.SEND_MAIL} WHERE sm_type = 1 AND sm_expire_at < NOW()`;
+        await db.execute(delBeforeSQL);
+
+        // 유효시간 안에 있는 해쉬로 검색
+        const sql = {
+            query : `SELECT sm_to FROM ${TABLE.SEND_MAIL} WHERE sm_type = ? AND sm_hash = ? AND sm_expire_at > NOW()`,
+            values : [ 1, data.hash ]
+        };
+
+        const [[row]] = await db.execute(sql.query, sql.values);
+
+        if (!row) throw new Error('유효 시간이 만료되었거나 이미 처리되었습니다.');
+
+        const user_email = row.sm_to;
+        const user_pwd = await jwt.generatePassword(data.password);
+        const updateSql = sqlHelper.Update(
+            TABLE.USER_INFO, 
+            {user_pwd}, 
+            {user_email}
+        );
+
+        const [result] = await db.execute(updateSql.query, updateSql.values);
+
+        // 처리 결과 삭제
+        const delAfterSQL = sqlHelper.DeleteSimple(
+            TABLE.SEND_MAIL,
+            { sm_hash : data.hash }
+        )
+
+        db.execute(delAfterSQL.query, delAfterSQL.values);
+
+        return result.affectedRows == 1;
+    },
+    async googleCallback(req, res, err, user) {
+        let html = fs.readFileSync(__dirname+'/socialPopup.html').toString();
+        let payload = {};
+        if (err) {
+            payload.err = err;
+        } else {
+            // 토큰 만들고 쿠키 생성
+            const token = jwt.getToken(user);
+            req.body.user_id = user.user_id;
+            const data = userModel.loginUser(req);
+            user.user_login_at = data.user_login_at;
+            user.user_login_ip = data.user_login_ip;
+            res.cookie('token', token, { httpOnly : true });
+            payload.token = token;
+            payload.user = user;
+        }
+        html = html.replace('{payload}', JSON.stringify(payload));
+        return html;
+    },
+    async loginGoogle(req, profile) {
+        let user = null;
+        try { // 이미 회원이 있는지?
+            user = await userModel.getUserBy({ 
+                user_email : profile.email 
+            });
+            return user;
+        } catch (e) { // 없으면 새로 DB에 저장
+            const at = moment().format('LT');
+            const ip = getIp(req);
+            const data = {
+                user_id : profile.id,
+                user_pwd : '',
+                user_name : profile.displayName,
+                user_email : profile.email,
+                user_level : await getDefaultUserLevel(),
+                user_create_at : at,
+                user_create_ip : ip,
+                user_update_at : at,
+                user_update_ip : ip
+            };
+            const sql = sqlHelper.Insert(TABLE.USER_INFO, data);
+            await db.execute(sql.query, sql.values);
+            user = await userModel.getUserBy({ 
+                user_email : profile.email 
+            });
+        }
+        return user;
     }
 };
 

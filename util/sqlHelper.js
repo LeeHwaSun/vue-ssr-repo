@@ -54,7 +54,24 @@ const sqlHelper = {
         query = query.replace('{2}', wheres.join(' AND '));
 
         return { query, values };
+    },
+    DeleteSimple(table, data) {
+        let query = `DELETE FROM ${table}`;
+        const where = [];
+        const values = [];
 
+        if (data) {
+            const fields = Object.keys(data);
+            for (const field of fields) {
+                where.push(`${field}=?`);
+                values.push(data[field]);
+            }
+            query += ` WHERE ` + where.join(' AND ');
+        } else {
+            throw new Error('WHERE가 없습니다.');
+        }
+
+        return { query, values };
     }
 };
 

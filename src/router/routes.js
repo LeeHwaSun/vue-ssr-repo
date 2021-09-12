@@ -3,6 +3,7 @@ import About from '../views/About.vue'
 import Login from '../views/user/Login.vue'
 import Join from '../views/user/Join.vue'
 import Error from '../views/Error.vue'
+import ModifyPassword from '../views/user/ModifyPassword.vue';
 
 const routes = [
     {
@@ -29,11 +30,18 @@ const routes = [
         component: Join
     },
     {
+        path: '/modifyPassword/:hash',
+        name: 'NoAuthModiftPassword',
+        //component: () => import(/* webpackChunkName: "modifyPassword" */ '../views/user/ModifyPassword.vue')
+        component: ModifyPassword
+    },
+    {
         path: '*',
         name: 'Error',
         //component: () => import(/* webpackChunkName: "error" */ '../views/Error.vue')
         component: Error
-    }
+    },
+    
   ]
 
   export default routes;
