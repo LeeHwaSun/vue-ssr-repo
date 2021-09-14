@@ -20,5 +20,4 @@ jobs:
             cd /home/ubuntu/vue-ssr-repo
             sudo git pull origin main
             sudo yarn
-            sudo yarn build
             sudo pm2 reload all
