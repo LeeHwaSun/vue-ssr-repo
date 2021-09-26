@@ -8,7 +8,7 @@
     "dev": "vue-cli-service serve",
     "postbuild": "rimraf dist/index.html",
     "prebuild": "rimraf dist/{js,css,fonts,img}",
-    "start": "cross-env DEV_ENV=DEV nodemon server/server.js"
+    "start": "nodemon server/server.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
@@ -26,9 +26,12 @@
     "mysql2": "^2.2.5",
     "nodemailer": "^6.6.3",
     "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
     "passport-google-oauth2": "^0.2.0",
     "passport-jwt": "^4.0.0",
+    "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
+    "passport-naver": "^1.0.6",
     "pm2": "^5.1.1",
     "qs": "^6.10.1",
     "rand-token": "^1.0.1",

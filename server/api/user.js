@@ -78,9 +78,31 @@ router.get('/loginGoogle', passport.authenticate("google", { scope : ["email", "
 // 구글 로그인 콜백
 router.get('/google-callback', (req, res) => {
     passport.authenticate('google', async function (err, user) {
-        const result = await modelCall(userModel.googleCallback, req, res, err, user);
+        const result = await modelCall(userModel.socialCallback, req, res, err, user);
         res.end(result);
     })(req, res);
-})
+});
+
+// 카카오 로그인 요청
+router.get('/loginKakao', passport.authenticate("kakao"));
+
+// 카카오 로그인 콜백
+router.get('/kakao-callback', (req, res) => {
+    passport.authenticate('kakao', async function (err, user) {
+        const result = await modelCall(userModel.socialCallback, req, res, err, user);
+        res.end(result);
+    })(req, res);
+});
+
+// 네이버 로그인 요청
+router.get('/loginNaver', passport.authenticate("naver"));
+
+// 네이버 로그인 콜백
+router.get('/naver-callback', (req, res) => {
+    passport.authenticate('naver', async function (err, user) {
+        const result = await modelCall(userModel.socialCallback, req, res, err, user);
+        res.end(result);
+    })(req, res);
+});
 
 module.exports = router;

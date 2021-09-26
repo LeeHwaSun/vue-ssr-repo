@@ -198,7 +198,7 @@ const userModel = {
 
         return result.affectedRows == 1;
     },
-    async googleCallback(req, res, err, user) {
+    async socialCallback(req, res, err, user) {
         let html = fs.readFileSync(__dirname+'/socialPopup.html').toString();
         let payload = {};
         if (err) {
@@ -242,6 +242,72 @@ const userModel = {
             await db.execute(sql.query, sql.values);
             user = await userModel.getUserBy({ 
                 user_email : profile.email 
+            });
+        }
+        return user;
+    },
+    async loginKakao(req, profile) {
+        let user = null;
+        const kakaoAccount = profile._json.kakao_account;
+        const kakaoProp = profile._json.properties;
+        try { // 이미 회원이 있는지?
+            user = await userModel.getUserBy({ 
+                user_email : kakaoAccount.email
+            });
+            return user;
+        } catch (e) { // 없으면 새로 DB에 저장
+            const at = moment().format('LT');
+            const ip = getIp(req);
+            const data = {
+                user_id : profile.id,
+                user_pwd : '',
+                user_provider : profile.provider,
+                user_name : kakaoProp.nickname,
+                user_gender : kakaoAccount.gender == 'male' ? 'M' : 'F',
+                user_email : kakaoAccount.email,
+                user_photo : kakaoProp.thumbnail_image,
+                user_level : await getDefaultUserLevel(),
+                user_create_at : at,
+                user_create_ip : ip,
+                user_update_at : at,
+                user_update_ip : ip
+            };
+            const sql = sqlHelper.Insert(TABLE.USER_INFO, data);
+            await db.execute(sql.query, sql.values);
+            user = await userModel.getUserBy({ 
+                user_email : kakaoAccount.email 
+            });
+        }
+        return user;
+    },
+    async loginNaver(req, profile) {
+        let user = null;
+        const naverJson = profile._json;
+        try { // 이미 회원이 있는지?
+            user = await userModel.getUserBy({ 
+                user_email : naverJson.email
+            });
+            return user;
+        } catch (e) { // 없으면 새로 DB에 저장
+            const at = moment().format('LT');
+            const ip = getIp(req);
+            const data = {
+                user_id : profile.id,
+                user_pwd : '',
+                user_provider : profile.provider,
+                user_name : naverJson.nickname,
+                user_email : naverJson.email,
+                user_photo : naverJson.profile_image,
+                user_level : await getDefaultUserLevel(),
+                user_create_at : at,
+                user_create_ip : ip,
+                user_update_at : at,
+                user_update_ip : ip
+            };
+            const sql = sqlHelper.Insert(TABLE.USER_INFO, data);
+            await db.execute(sql.query, sql.values);
+            user = await userModel.getUserBy({ 
+                user_email : naverJson.email 
             });
         }
         return user;

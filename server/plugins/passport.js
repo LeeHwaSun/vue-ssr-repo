@@ -4,12 +4,15 @@ const LocalStrategy = require('passport-local').Strategy;
 const jwt = require('../plugins/jwt');
 const userModel = require('../api/_model/userModel');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const KakaoStrategy = require('passport-kakao').Strategy;
+const NaverStrategy = require('passport-naver').Strategy;
 const { GOOGLE_CLIENT_ID, 
         GOOGLE_CLIENT_SECRET_KEY, 
-        DEV_ENV, 
-        VUE_APP_SERVER_PORT } = process.env;
-
-const CALLBACK_URL = DEV_ENV == 'DEV' ? `http://localhost:${VUE_APP_SERVER_PORT}` : `https://mystudyhome.kro.kr`;
+        KAKAO_OAUTH_CLIENT_ID,
+        KAKAO_OAUTH_CLIENT_SECRET_KEY,
+        CALLBACK_URL,
+        NAVER_CLIENT_ID,
+        NAVER_CLIENT_SECRET_KEY } = process.env;
 
 module.exports = (app) => {
     app.use(passport.initialize());
@@ -43,10 +46,44 @@ module.exports = (app) => {
                 const user = await userModel.loginGoogle(request, profile);
                 return done(null, user);
             } else {
-                return done('로그인 실패', null);
+                return done('구글 로그인 실패', null);
             }
         }
     ));
+
+    passport.use(new KakaoStrategy(
+        {
+            clientID : KAKAO_OAUTH_CLIENT_ID,
+            clientSecret : KAKAO_OAUTH_CLIENT_SECRET_KEY,
+            callbackURL : `${CALLBACK_URL}/api/user/kakao-callback`,
+            passReqToCallback : true
+        },
+        async function (request, accessToken, refreshToken, profile, done) {
+            if (profile && profile.id) {
+                const user = await userModel.loginKakao(request, profile);
+                return done(null, user);
+            } else {
+                return done('카카오 로그인 실패', null);
+            }
+        }
+    ));
+
+    passport.use(new NaverStrategy(
+        {
+            clientID : NAVER_CLIENT_ID,
+            clientSecret : NAVER_CLIENT_SECRET_KEY,
+            callbackURL : `${CALLBACK_URL}/api/user/naver-callback`,
+            passReqToCallback : true
+        },
+        async function (request, accessToken, refreshToken, profile, done) {
+            if (profile && profile.id) {
+                const user = await userModel.loginNaver(request, profile);
+                return done(null, user);
+            } else {
+                return done('네이버 로그인 실패', null);
+            }
+        }
+    ))
 
     app.use(async (req, res, next) => {
         const token = req.cookies.token;

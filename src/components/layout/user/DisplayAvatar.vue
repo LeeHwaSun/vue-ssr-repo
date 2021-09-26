@@ -3,7 +3,7 @@
         <template v-if="user">
         <v-img 
             v-if="hasImage" 
-            :src="`/upload/userProfile/${user.user_id}.jpg?w=32&h=32`"
+            :src="userPhoto"
             @onError="imageError"></v-img>
         <div v-else>{{ user.user_name[0] }}</div>
         </template>
@@ -28,6 +28,11 @@ export default {
     watch : {
         user() {
             this.hasImage = true;
+        }
+    },
+    computed : {
+        userPhoto() {
+            return this.user.user_photo || `/upload/userProfile/${user.user_id}.jpg?w=32&h=32`
         }
     },
     methods : {

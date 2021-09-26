@@ -28,6 +28,12 @@
           <v-btn @click="loginGoogle" block color="secondary">Google Login</v-btn>
         </v-card-text>
         <v-card-text class="mt-n4">
+          <v-btn @click="loginKakao" block color="secondary">Kakao Login</v-btn>
+        </v-card-text>
+        <v-card-text class="mt-n4">
+          <v-btn @click="loginNaver" block color="secondary">Naver Login</v-btn>
+        </v-card-text>
+        <v-card-text class="mt-n4">
           <v-btn to="/join" block>Join to User</v-btn>
         </v-card-text>
     </v-card>
@@ -94,18 +100,27 @@ export default {
         this.tabs = 0;
       }
     },
-    async loginGoogle() {
+    socialPopup(url) {
       const childWindow = window.open(
-        "/api/user/loginGoogle",
-        "googleLoginPopup",
+        url,
+        "socialLoginPopup",
         "top=10, left=10, width=500, height=600, status=no, menubar=no, toolbar=no, resizeable=no"
       );
 
-      if (!window.onGoogleCallback) {
-        window.onGoogleCallback = this.googleLoginCallback;
+      if (!window.onSocialCallback) {
+        window.onSocialCallback = this.socialLoginCallback;
       }
     },
-    googleLoginCallback(payload) {
+    loginGoogle() {
+      this.socialPopup("/api/user/loginGoogle");
+    },
+    loginKakao() {
+      this.socialPopup("/api/user/loginKakao");
+    },
+    loginNaver() {
+      this.socialPopup("/api/user/loginNaver");
+    },
+    socialLoginCallback(payload) {
       if (payload.err) {
         this.$toast.err(payload.err);
       } else {
@@ -114,7 +129,8 @@ export default {
         this.$router.push('/');
         this.$toast.info(`${this.user.user_name}님 환영합니다!!!`);
       }
-    }
+    },
+    
   }
 }
 </script>
