@@ -10,6 +10,7 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import titleMixin from './mixins/title-mixin'
 import './plugins/axios'
+import './plugins/moment'
 
 Vue.config.productionTip = false
 

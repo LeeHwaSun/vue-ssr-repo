@@ -11,8 +11,8 @@
                     </v-icon>
                     <span v-html="content"></span>
                 </div>
-                <v-form v-if="options.type === 'prompt'" v-model="valid" ref="form" lazy-validation>
-                    <v-text-field v-model="text" :rules="[ v => !!v || '필수 입력입니다.',]" ></v-text-field>
+                <v-form v-if="options.type === 'prompt'" v-model="valid" ref="form"  @submit.stop="ok" lazy-validation>
+                    <v-text-field :type="options.formType" v-model="text" :rules="[ v => !!v || '필수 입력입니다.',]" ></v-text-field>
                 </v-form>
             </v-card-text>
             <v-card-actions class="justify-end">
@@ -46,7 +46,6 @@ export default {
                     this.promise = { resolve, reject };
                     this.content = content;
                     this.title = title;
-                    console.log(option);
                     this.options = Object.assign({}, option);
                     this.dialog = true;
                 });

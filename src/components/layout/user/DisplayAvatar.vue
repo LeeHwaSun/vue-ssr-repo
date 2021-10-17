@@ -4,7 +4,7 @@
         <v-img 
             v-if="hasImage" 
             :src="userPhoto"
-            @onError="imageError"></v-img>
+            @error="imageError"></v-img>
         <div v-else>{{ user.user_name[0] }}</div>
         </template>
         <v-icon v-else>mdi-account</v-icon>
@@ -32,7 +32,12 @@ export default {
     },
     computed : {
         userPhoto() {
-            return this.user.user_photo || `/upload/userProfile/${user.user_id}.jpg?w=32&h=32`
+            const user_provider = this.user.user_provider;
+            if (user_provider && (user_provider == 'google' || user_provider == 'kakao')) {
+                return this.user.user_photo;
+            } else {
+                return this.user.user_photo + '?w=32&h=32';
+            }
         }
     },
     methods : {

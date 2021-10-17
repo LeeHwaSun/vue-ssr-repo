@@ -17,6 +17,12 @@ router.post('/', async (req, res) => {
     res.json(result);
 });
 
+// 회원 정보 수정
+router.patch('/', async (req, res) => {
+    const result = await modelCall(userModel.updateUser, req);
+    res.json(result);
+});
+
 // 로그인
 router.post('/loginUserLocal', async (req, res) => {
     passport.authenticate('local', function(err, user, info) {
@@ -103,6 +109,11 @@ router.get('/naver-callback', (req, res) => {
         const result = await modelCall(userModel.socialCallback, req, res, err, user);
         res.end(result);
     })(req, res);
+});
+
+router.post('/checkPassword', async (req, res) => {
+    const result = await modelCall(userModel.checkPassword, req);
+    res.json(result);
 });
 
 module.exports = router;

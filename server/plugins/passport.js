@@ -6,6 +6,7 @@ const userModel = require('../api/_model/userModel');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const KakaoStrategy = require('passport-kakao').Strategy;
 const NaverStrategy = require('passport-naver').Strategy;
+const { LV } = require('../../util/level');
 const { GOOGLE_CLIENT_ID, 
         GOOGLE_CLIENT_SECRET_KEY, 
         KAKAO_OAUTH_CLIENT_ID,
@@ -13,6 +14,19 @@ const { GOOGLE_CLIENT_ID,
         CALLBACK_URL,
         NAVER_CLIENT_ID,
         NAVER_CLIENT_SECRET_KEY } = process.env;
+
+function loginRules(user) {
+    if (user.user_leave_at) {
+        return '탈퇴 회원입니다.';
+    }
+
+    switch (user.user_level) {
+        case LV.AWAIT : 
+            return '대기 회원입니다.';
+        case LV.BLOCK : 
+            return '차단 회원입니다.';
+    }
+}
 
 module.exports = (app) => {
     app.use(passport.initialize());
@@ -26,6 +40,10 @@ module.exports = (app) => {
             try {
                 user_pwd = jwt.generatePassword(user_pwd);
                 const user = await userModel.getUserBy({user_id, user_pwd});
+                const msg = loginRules(user);
+                if (msg) {
+                    return done(null, null, msg);
+                }
                 return done(null, user);
             } catch (e) {
                 console.log(e.message);
@@ -44,7 +62,10 @@ module.exports = (app) => {
         async function (request, accessToken, refreshToken, profile, done) {
             if (profile && profile.id) {
                 const user = await userModel.loginGoogle(request, profile);
-                return done(null, user);
+                const msg = loginRules(user);
+                if (msg) {
+                    return done(msg, null, null);
+                }
             } else {
                 return done('구글 로그인 실패', null);
             }
@@ -61,7 +82,10 @@ module.exports = (app) => {
         async function (request, accessToken, refreshToken, profile, done) {
             if (profile && profile.id) {
                 const user = await userModel.loginKakao(request, profile);
-                return done(null, user);
+                const msg = loginRules(user);
+                if (msg) {
+                    return done(msg, null, null);
+                }
             } else {
                 return done('카카오 로그인 실패', null);
             }
@@ -92,6 +116,10 @@ module.exports = (app) => {
         if (!user_id) return next();
         try {
             const user = await userModel.getUserBy({ user_id });
+            const msg = loginRules(user);
+            if (msg) {
+                return next();
+            }
             req.login(user, { session : false }, (err) => {});
         } catch (e) {
             console.log('Authorization Error :', e);

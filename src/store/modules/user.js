@@ -1,5 +1,6 @@
 import Vue from "vue";
 import qs from 'qs';
+import { LV } from '../../../util/level';
 
 export const state = () => ({
     user : null,
@@ -16,7 +17,16 @@ export const mutations = {
 };
 
 export const getters = {
-
+    isAdmin(state) {
+        if (state.user) {
+            return state.user && state.user.user_level >= LV.ADMIN;
+        }
+    },
+    isSuper(state) {
+        if (state.user) {
+            return state.user && state.user.user_level >= LV.SUPER;
+        }
+    }
 };
 
 export const actions = {
@@ -38,6 +48,15 @@ export const actions = {
         const data = await $axios.post(`/api/user/`, form);
         return data;
     },
+    async updateUser({ commit }, form) {
+        const { $axios } = Vue.prototype;
+        commit('SET_USER', null);
+        const data = await $axios.patch(`/api/user/`, form);
+        if (data) {
+            commit('SET_USER', data);
+        }
+        return !!data;
+    },
     async loginUserLocal({ commit }, form) {
         const { $axios } = Vue.prototype;
         const data = await $axios.post(`/api/user/loginUserLocal`, form);
@@ -46,6 +65,11 @@ export const actions = {
             commit('SET_TOKEN', data.token);
         }
         return !!data;
+    },
+    async checkPassword({ commit }, form) {
+        const { $axios } = Vue.prototype;
+        const data = await $axios.post(`/api/user/checkPassword`, form);
+        return data;
     },
     async logout({ commit, state }) {
         const user_name = state.user.user_name;

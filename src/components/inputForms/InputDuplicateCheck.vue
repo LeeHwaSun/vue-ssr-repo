@@ -52,7 +52,7 @@ export default {
     data() {
         return {
             loading: false,
-            isCheck: !this.cbCheck,
+            isCheck: this.origin ? true : !this.cbCheck,
             errMsg: "",
             successMsg: "",
         }
@@ -62,12 +62,9 @@ export default {
             return !!this.cbCheck && this.$refs.field.errorBucket.length === 0;
         }
     },
-    mounted() {
-
-    },
     methods: {
         onInput(val) {
-            this.isCheck = this.origin ? this.origin === val : !!this.cbCheck ? false : true;
+            this.isCheck = this.origin ? this.origin === val : !this.cbCheck;
             this.errMsg = "";
             this.successMsg = "";
             this.$emit('input', val);

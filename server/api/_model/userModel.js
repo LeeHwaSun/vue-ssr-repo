@@ -2,11 +2,13 @@ const fs = require('fs');
 const db = require('../../plugins/mysql');
 const jwt = require('../../plugins/jwt');
 const sendMailer = require('../../plugins/sendMailer');
+const path = require('path');
 const sqlHelper = require('../../../util/sqlHelper');
 const TABLE = require('../../../util/TABLE');
 const { LV } = require('../../../util/level');
 const moment = require('../../../util/moment');
 const { getIp } = require('../../../util/lib');
+const e = require('express');
 
 
 function clearUserField(user) {
@@ -65,8 +67,11 @@ const userModel = {
         };
 
         // 이미지 업로드 처리
+        delete payload.user_image;
+        const fileName = jwt.getRandToken(16);
         if (req.files && req.files.user_img) {
-            req.files.user_img.mv(`${USER_PROFILE_PATH}/${payload.user_id}.jpg`, (err) => {
+            payload.user_photo = `/upload/userProfile/${fileName}.jpg`;
+            req.files.user_img.mv(`${USER_PROFILE_PATH}/${fileName}.jpg`, (err) => {
                 if (err) {
                     console.log("USER IMAGE UPLOAD ERROR ", err);
                 }
@@ -82,6 +87,80 @@ const userModel = {
 
         const [row] = await db.execute(sql.query, sql.values);
         return row.affectedRows == 1;
+    },
+    async updateUser(req) {
+        const at = moment().format('LT');
+        const ip = getIp(req);
+
+        const payload = {
+            ...req.body,
+            user_update_at: at,
+            user_update_ip: ip,
+        };
+
+        // 레벨은 관리자 모드 admMode true
+        const admMode = payload.admMode;
+        const user_id = payload.user_id;
+        const deleteImage = payload.deleteImage;
+        delete payload.admMode;
+        delete payload.user_id;
+        delete payload.deleteImage;
+
+        // 비밀번호 값이 있으면 변경
+        if (payload.user_pwd) {
+            payload.user_pwd = jwt.generatePassword(payload.user_pwd);
+        } else {
+            delete payload.user_pwd;
+        }
+
+        // 이미지 업로드 처리
+        delete payload.user_image;
+        const user_photo = payload.user_photo || '';
+        const photoPathInfo = path.parse(user_photo);
+        const oldName = photoPathInfo.name;
+        const oldFile = `${USER_PROFILE_PATH}/${oldName}.jpg`;
+        const cachePath = `${USER_PROFILE_PATH}/.cache`;
+
+        if (deleteImage || (req.files && req.files.user_image)) {
+            // 할일 기존 이미지 삭제
+            payload.user_photo = '';
+            try {
+                fs.unlinkSync(oldFile);
+                const cacheDir = fs.readdirSync(cachePath);
+                for (const p of cacheDir) {
+                    if (p.startsWith(oldName)) {
+                        try {
+                            console.log(`delete ${p}`);
+                            fs.unlinkSync(`${cachePath}/${p}`);
+                        } catch (e) {
+                            console.log(`delete ${p} error :`, e.message);
+                        }
+                    }
+                }
+            } catch (e) {
+                
+            }
+
+            if (req.files && req.files.user_image) {
+                const newName = jwt.getRandToken(16);
+                payload.user_photo = `/upload/userProfile/${newName}.jpg`;
+                const newFile = `${USER_PROFILE_PATH}/${newName}.jpg`;
+                req.files.user_image.mv(newFile, (err) => {
+                    if (err) {
+                        console.log("User image upload error :", err);
+                    }
+                });
+            }
+        }
+
+        const sql = sqlHelper.Update(
+            TABLE.USER_INFO, 
+            payload, 
+            { user_id }
+        );
+        const [row] = await db.execute(sql.query, sql.values);
+
+        return await userModel.getUserBy({ user_id });
     },
     async getUserBy(form, cols = []) {
         const sql = sqlHelper.SelectSimple(
@@ -203,6 +282,8 @@ const userModel = {
         let payload = {};
         if (err) {
             payload.err = err;
+        } else if (!user) {
+            
         } else {
             // 토큰 만들고 쿠키 생성
             const token = jwt.getToken(user);
@@ -230,6 +311,7 @@ const userModel = {
             const data = {
                 user_id : profile.id,
                 user_pwd : '',
+                user_provider : profile.provider,
                 user_name : profile.displayName,
                 user_email : profile.email,
                 user_level : await getDefaultUserLevel(),
@@ -311,6 +393,26 @@ const userModel = {
             });
         }
         return user;
+    },
+    async checkPassword(req) {
+        if (!req.user) {
+            throw new Error('로그인 되어 있지 않습니다.');
+        }
+        const data = {
+            user_id : req.user.user_id,
+            user_pwd : await jwt.generatePassword(req.body.user_password),
+        };
+        const sql = sqlHelper.SelectSimple(
+            TABLE.USER_INFO, 
+            data, 
+            [ 'COUNT(*) AS cnt' ]
+        );
+        const [[{cnt}]] = await db.execute(sql.query, sql.values);
+        if (cnt == 0) {
+            throw new Error('비밀번호가 일치 하지 않습니다.');
+        } else {
+            return true;
+        }
     }
 };
 

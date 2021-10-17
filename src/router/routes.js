@@ -4,6 +4,7 @@ import Login from '../views/user/Login.vue'
 import Join from '../views/user/Join.vue'
 import Error from '../views/Error.vue'
 import ModifyPassword from '../views/user/ModifyPassword.vue';
+import Config from '../views/admin/Config.vue';
 
 const routes = [
     {
@@ -34,6 +35,12 @@ const routes = [
         name: 'NoAuthModiftPassword',
         //component: () => import(/* webpackChunkName: "modifyPassword" */ '../views/user/ModifyPassword.vue')
         component: ModifyPassword
+    },
+    {
+        path: '/adm/config',
+        name: 'AdmConfig',
+        //component: () => import(/* webpackChunkName: "error" */ '../views/admin/Config.vue')
+        component: Config
     },
     {
         path: '*',
