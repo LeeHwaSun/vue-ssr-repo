@@ -24,4 +24,4 @@ pnpm-debug.log*
 
 yarn.lock
 .env
-/sql/*.sql
+/server/sql/*.sql

@@ -8,7 +8,9 @@
                     <v-icon style="color:white">mdi-close</v-icon>
                 </v-btn>
             </v-toolbar>
-            <slot></slot>
+            <v-card-text>
+                <slot></slot>
+            </v-card-text>
         </v-card>
     </v-dialog>
 </template>
