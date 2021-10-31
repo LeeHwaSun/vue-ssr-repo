@@ -29,6 +29,8 @@
                 label="키"
                 v-model="form.cfg_key" 
                 :cbCheck="keyCheck"
+                :origin="originKey"
+                :readonly="!!item"
                 :rules="[
                     rules.required({ label : '키' }),
                     rules.alphaNum(),
@@ -67,6 +69,7 @@ import InputDuplicateCheck from '../../../components/inputForms/InputDuplicateCh
 import TypeValue from './TypeValue.vue';
 import { LV } from '../../../../util/level';
 import validateRules from '../../../../util/validateRules';
+import { deepCopy, findParentVm } from '../../../../util/lib';
 export default {
     components : { InputDuplicateCheck, TypeValue },
     name : "ConfigForm",
@@ -74,38 +77,74 @@ export default {
         keyCheck : {
             type : Function,
             default : null
+        },
+        groupItems : {
+            type : Array,
+            default : [],
+        },
+        item : {
+            type : Object,
+            default : null,
         }
     },
     data() {
         return {
             valid : true,
-            form : {
-                cfg_key : "", // 중복
-                cfg_val : "", // 타입에 따라서
-                cfg_name : "", //
-                cfg_group : "", //
-                cfg_level : "", // 접근
-                cfg_type : "String", // 저장형식
-                cfg_comment : "", // 설명
-                cfg_client : 0
-            },
-            groupItems : [],
+            form : null,
             typeItems : ['String', 'Number', 'JSON', 'Secret'],
+            originKey : null,
         }
     },
     computed : {
         LV : () => LV,
         rules : () => validateRules,
     },
+    created() {
+        this.init();
+    },
+    watch : {
+        item() {
+            this.init();
+        },
+    },
     methods : {
+        init() {
+            if (this.item) {
+                this.form = deepCopy(this.item);
+                this.originKey = this.item.cfg_key
+            } else {
+                this.form = {
+                    cfg_key : "", // 중복
+                    cfg_val : "", // 타입에 따라서
+                    cfg_name : "", //
+                    cfg_group : "", //
+                    cfg_level : "", // 접근
+                    cfg_type : "String", // 저장형식
+                    cfg_comment : "", // 설명
+                    cfg_client : 0
+                }
+                this.originKey = null;
+                this.$refs.form.resetValidation();
+            }
+        },
         async save() {
             this.$refs.form.validate();
             await this.$nextTick();
             if (!this.valid) return;
             if (!this.$refs.cfgKey.validate()) return;
+            if (!this.item) {
+                let i = 0;
+                const parent = findParentVm(this, 'AdmConfig');
+                parent.items.forEach( (item) => {
+                    if (item.cfg_group == this.form.cfg_group) {
+                        i++;
+                    }
+                });
+                this.form.cfg_sort = i;
+            }
+            console.log(this.form);
             this.$emit('save', this.form);
         },
-        async fetchGroupItems() {},
     }
 }
 </script>

@@ -67,7 +67,7 @@ const store = new Vuex.Store({
   mutations: {
     SET_APP_READY(state) {
       state.appReady = true;
-    }
+    },
   },
   actions: {
     async appInit({ dispatch, commit }, ctx) {

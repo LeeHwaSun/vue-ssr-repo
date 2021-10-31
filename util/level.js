@@ -36,6 +36,9 @@ const level = {
         } else {
             return "red accent-4";
         }
+    },
+    isGrant(req, lv) {
+        return req.user && req.user.user_level > lv ? true : false;
     }
 }
 

@@ -1,0 +1,8 @@
+/* style.css */
+.v-application .list-group {
+    list-style : none;
+    padding-left : 0;
+}
+.list-group-item {
+    padding-left : 0;
+}
