@@ -62,6 +62,11 @@ export default {
             return !!this.cbCheck && this.$refs.field.errorBucket.length === 0;
         }
     },
+    watch: {
+        origin() {
+            this.isCheck = this.origin ? true : !this.cbCheck;
+        }
+    },
     methods: {
         onInput(val) {
             this.isCheck = this.origin ? this.origin === val : !this.cbCheck;

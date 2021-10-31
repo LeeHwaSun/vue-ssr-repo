@@ -111,7 +111,7 @@ export default {
         init() {
             if (this.item) {
                 this.form = deepCopy(this.item);
-                this.originKey = this.item.cfg_key
+                this.originKey = this.item.cfg_key;
             } else {
                 this.form = {
                     cfg_key : "", // 중복
@@ -124,6 +124,8 @@ export default {
                     cfg_client : 0
                 }
                 this.originKey = null;
+            }
+            if (this.$refs.form) {
                 this.$refs.form.resetValidation();
             }
         },
