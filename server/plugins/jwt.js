@@ -1,9 +1,8 @@
-require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const randToken = require('rand-token');
 const crypto = require('crypto');
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY } = siteConfig;
 
 const options = {
     algorithm : 'HS256',

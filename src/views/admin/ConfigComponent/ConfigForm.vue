@@ -33,7 +33,7 @@
                 :readonly="!!item"
                 :rules="[
                     rules.required({ label : '키' }),
-                    rules.alphaNum(),
+                    rules.cfgKey(),
                 ]"
             />
         </div>
@@ -70,6 +70,7 @@ import TypeValue from './TypeValue.vue';
 import { LV } from '../../../../util/level';
 import validateRules from '../../../../util/validateRules';
 import { deepCopy, findParentVm } from '../../../../util/lib';
+import jsonStringify from 'json-stable-stringify';
 export default {
     components : { InputDuplicateCheck, TypeValue },
     name : "ConfigForm",
@@ -111,6 +112,10 @@ export default {
         init() {
             if (this.item) {
                 this.form = deepCopy(this.item);
+                if (this.form.cfg_type == 'JSON') {
+                    const obj = JSON.parse(this.form.cfg_val);
+                    this.form.cfg_val = jsonStringify(obj, { space : '  ' });
+                }
                 this.originKey = this.item.cfg_key;
             } else {
                 this.form = {
@@ -123,7 +128,7 @@ export default {
                     cfg_comment : "", // 설명
                     cfg_client : 0
                 }
-                this.originKey = null;
+                this.originKey = '';
             }
             if (this.$refs.form) {
                 this.$refs.form.resetValidation();
@@ -144,8 +149,16 @@ export default {
                 });
                 this.form.cfg_sort = i;
             }
-            console.log(this.form);
-            this.$emit('save', this.form);
+            // JSON 처리
+            try {
+                if (this.form.cfg_type == 'JSON') {
+                    const obj = JSON.parse(this.form.cfg_val);
+                    this.form.cfg_val = JSON.stringify(obj);
+                }
+                this.$emit('save', this.form);
+            } catch (e) {
+                this.$toast.error('JSON 형식이 올바르지 않습니다.');
+            }
         },
     }
 }

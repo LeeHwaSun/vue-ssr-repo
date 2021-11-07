@@ -11,9 +11,10 @@ const { GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SECRET_KEY, 
         KAKAO_OAUTH_CLIENT_ID,
         KAKAO_OAUTH_CLIENT_SECRET_KEY,
-        CALLBACK_URL,
         NAVER_CLIENT_ID,
-        NAVER_CLIENT_SECRET_KEY } = process.env;
+        NAVER_CLIENT_SECRET_KEY } = siteConfig;
+
+const { CALLBACK_URL } = process.env;
 
 function loginRules(user) {
     if (user.user_leave_at) {
@@ -56,7 +57,7 @@ module.exports = (app) => {
         {
             clientID : GOOGLE_CLIENT_ID,
             clientSecret : GOOGLE_CLIENT_SECRET_KEY,
-            callbackURL : `${CALLBACK_URL}/api/user/google-callback`,
+            callbackURL : `${CALLBACK_URL}/api/user/social-callback/google`,
             passReqToCallback : true
         },
         async function (request, accessToken, refreshToken, profile, done) {
@@ -76,7 +77,7 @@ module.exports = (app) => {
         {
             clientID : KAKAO_OAUTH_CLIENT_ID,
             clientSecret : KAKAO_OAUTH_CLIENT_SECRET_KEY,
-            callbackURL : `${CALLBACK_URL}/api/user/kakao-callback`,
+            callbackURL : `${CALLBACK_URL}/api/user/social-callback/kakao`,
             passReqToCallback : true
         },
         async function (request, accessToken, refreshToken, profile, done) {
@@ -96,7 +97,7 @@ module.exports = (app) => {
         {
             clientID : NAVER_CLIENT_ID,
             clientSecret : NAVER_CLIENT_SECRET_KEY,
-            callbackURL : `${CALLBACK_URL}/api/user/naver-callback`,
+            callbackURL : `${CALLBACK_URL}/api/user/social-callback/naver`,
             passReqToCallback : true
         },
         async function (request, accessToken, refreshToken, profile, done) {

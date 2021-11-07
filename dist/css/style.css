@@ -1,8 +1,14 @@
 /* style.css */
-.v-application .list-group {
-    list-style : none;
-    padding-left : 0;
-}
-.list-group-item {
-    padding-left : 0;
-}
+/* ConfigItem Component CSS */
+.v-application .list-group { list-style : none; padding-left : 0; }
+.list-group-item { padding-left : 0; display: flex; border: 1px solid #ccc; border-radius: 5px; margin-top: 8px; }
+.list-group-item .handle + div { padding: 4px; display: table; width: 100%; }
+.list-group-item .handle + div > div { width: 100%; display: table-row; }
+.list-group-item .handle + div > div > div { padding: 4px; display: table-cell; }
+.list-group-item .handle + div > div > div:nth-child(1) { width: 20%; }
+.list-group-item .handle + div > div > div:nth-child(2) { width: auto; }
+.list-group-item .handle + div > div > div:nth-child(3) { width: 32px; }
+.list-group-item .handle + div > div > div:nth-child(4) { width: 36px; }
+.list-group .client { position: relative; top: 5px; left: 5px; }
+.list-group .comment { font-size: 0.9em; font-family: Roboto,sans-serif; }
+/* // ConfigItem Component CSS */

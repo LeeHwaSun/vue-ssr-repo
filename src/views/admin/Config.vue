@@ -24,6 +24,7 @@
                 :key="item.cfg_key"
                 :item="item"
                 @update="updateConfig"
+                @remove="removeConfig"
             >
             </config-item>
         </draggable>
@@ -33,9 +34,12 @@
             label="설정 추가" 
             ref="dialog" 
             max-width="500" 
+            dark
             color="primary"
+            persistent
         >
             <config-form 
+                ref="configForm"
                 @save="save" 
                 :keyCheck="keyCheck" 
                 :groupItems="groupItems"
@@ -83,23 +87,54 @@ export default {
     },
     watch : {
         group() {
-            this.curItems =  this.items.filter((item) => {
-                return item.cfg_group == this.groupName;
-            });
+            this.setCurItems();
         }
     },
     methods : {
         ...mapActions([ 'configDuplicateCheck', 'configSave' ]),
         addConfig() {
             this.item = null;
+            if (this.$refs.configForm) {
+                this.$refs.configForm.init();
+            }
             this.$refs.dialog.open();
         },
         updateConfig(item) {
             this.item = item;
+            if (this.$refs.configForm) {
+                this.$refs.configForm.init();
+            }
             this.$refs.dialog.open();
+        },
+        async removeConfig(item) {
+            // 진짜 지울거니?
+            const confirm = await this.$myNotify.confirm(
+                `<b>[${item.cfg_name}]</b> 삭제하시겠습니까?`, 
+                '설정항목 삭제', 
+                { icon : 'mdi-delete', iconColor : 'red' }
+            );
+            if (!confirm) return;
+            // DB 지우고
+            const data = await this.$axios.delete(`/api/config/${item.cf_key}`);
+            // 목록 업데이트
+            if (data) {
+                this.$toast.info(`[${item.cfg_name}] 삭제 하였습니다.`);
+                const idx = this.items.indexOf(item);
+                this.items.splice(idx, 1);
+                this.setCurItems();
+            }
         },
         async save(form) {
             const data = await this.configSave(form);
+            if (this.item) { // 수정
+                this.$toast.info(`[${form.cfg_name}] 수정 하였습니다.`);
+                const idx = this.items.indexOf(this.item);
+                this.items.splice(idx, 1, data);
+            } else { // 신규
+                this.$toast.info(`[${form.cfg_name}] 추가 하였습니다.`);
+                this.items.push(data);
+            }
+            this.setCurItems();
             this.$refs.dialog.close();
         },
         async keyCheck(value) {
@@ -117,6 +152,11 @@ export default {
                 item.cfg_sort = i++;
             });
             this.$axios.put('/api/config', this.curItems);
+        },
+        setCurItems() {
+            this.curItems = this.items.filter((item) => {
+                return item.cfg_group == this.groupName;
+            });
         }
     }
 }

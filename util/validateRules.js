@@ -108,6 +108,23 @@ const rules = {
         ruleArr.push(rules.pattern(opt));
         return ruleArr;
     },
+    cfgKey(options) {
+        const defaultOptions = {
+            label : "키",
+            len : 3,
+            info : null,
+            required : true,
+            pattern : /^[a-zA-Z0-9_-]+$/
+        };
+        const opt = Object.assign(defaultOptions, options);
+        const ruleArr = [];
+        if (opt.required) {
+            ruleArr.push(rules.required(opt));
+        }
+        ruleArr.push(rules.min(opt));
+        ruleArr.push(rules.pattern(opt));
+        return ruleArr;
+    },
 }
 
 module.exports = rules;
