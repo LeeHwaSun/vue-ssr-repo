@@ -24,12 +24,12 @@
             </v-tab-item>
           </v-tabs-items>
         </v-card-text>
-        <v-card-text class="mt-n4">
+        <!--v-card-text class="mt-n4">
           <v-btn @click="loginGoogle" block color="secondary">Google Login</v-btn>
-        </v-card-text>
-        <v-card-text class="mt-n4">
+        </v-card-text-->
+        <!--v-card-text class="mt-n4">
           <v-btn @click="loginKakao" block color="secondary">Kakao Login</v-btn>
-        </v-card-text>
+        </v-card-text-->
         <!--v-card-text class="mt-n4">
           <v-btn @click="loginNaver" block color="secondary">Naver Login</v-btn>
         </!--v-card-text-->

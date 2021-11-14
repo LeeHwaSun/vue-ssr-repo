@@ -84,6 +84,7 @@ const fs = require('fs');
 			metas : `<!-- inject more metas -->`,
 			user : req.user || null,
 			token : req.cookies.token || null,
+			config : clientConfig,
 		};
 
 		const stream = renderer.renderToStream(ctx);

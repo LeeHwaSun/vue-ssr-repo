@@ -147,11 +147,15 @@ export default {
         sortEnd() {
             // curItems 있는 정보로 cfg_sort 전체 업데이트
             let i = 0;
-            const arr = [];
+            const payload = [];
             this.curItems.forEach( (item) => {
                 item.cfg_sort = i++;
+                payload.push({ 
+                    cfg_key : item.cfg_key, 
+                    cfg_sort : item.cfg_sort 
+                });
             });
-            this.$axios.put('/api/config', this.curItems);
+            this.$axios.put('/api/config', payload);
         },
         setCurItems() {
             this.curItems = this.items.filter((item) => {
