@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+require('./plugins/pm2Bus');
 
 (async function() {
 	// 앱 초기화

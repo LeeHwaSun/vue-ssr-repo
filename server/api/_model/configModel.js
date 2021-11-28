@@ -10,13 +10,13 @@ const configModel = {
         global.siteConfig = {};
         global.clientConfig = {};
         for (const row of rows) {
-            configModel.setConfigItem(row);
+            configModel.setConfigItem(row, true);
         }
 
         console.log('설정 로드');
     },
-    setConfigItem(item) {
-        configModel.clearConfigItem(item.cfg_key);
+    setConfigItem(item, isLoad = false) {
+        configModel.clearConfigItem(item.cfg_key, isLoad);
         let val;
         if (item.cfg_type == 'JSON') {
             val = JSON.parse(item.cfg_val);
@@ -29,10 +29,24 @@ const configModel = {
         } else {
             siteConfig[item.cfg_key] = val;
         }
+
+        // 초기 로드가 아니면 메시지 보낸다.
+        if (!isLoad) {
+            process.send({
+                type : 'config:update',
+                data : item
+            });
+        }
     },
-    clearConfigItem(cfg_key) {
+    clearConfigItem(cfg_key, isLoad = false) {
         delete clientConfig[cfg_key];
         delete siteConfig[cfg_key];
+        if (!isLoad) {
+            process.send({
+                type : 'config:remove',
+                data : cfg_key
+            });
+        }
     },
     async duplicateCheck( { field, value } ) {
         const sql = sqlHelper.SelectSimple(
@@ -99,7 +113,7 @@ const configModel = {
             TABLE.CONFIG,
             { cfg_key }
         )
-        const [row] = db.execute(sql.query, sql.values);
+        const [row] = await db.execute(sql.query, sql.values);
         configModel.clearConfigItem(cfg_key); // 설정값 삭제
         return row.affectedRows == 1;
     }

@@ -3,8 +3,7 @@ module.exports = {
     apps : [{
         name: "mydiary",
         script : "./server/server.js",
-        instances : 0,
-        scale : 2,
+        instances : 2,
         exec_mode : 'cluster',
         wait_ready : true,
         listen_timeout : 60000,

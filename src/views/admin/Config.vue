@@ -115,7 +115,7 @@ export default {
             );
             if (!confirm) return;
             // DB 지우고
-            const data = await this.$axios.delete(`/api/config/${item.cf_key}`);
+            const data = await this.$axios.delete(`/api/config/${item.cfg_key}`);
             // 목록 업데이트
             if (data) {
                 this.$toast.info(`[${item.cfg_name}] 삭제 하였습니다.`);
