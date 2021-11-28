@@ -24,6 +24,7 @@ import SiteHeader from './components/layout/common/SiteHeader.vue';
 import SiteFooter from './components/layout/common/SiteFooter.vue';
 import SiteNavi from './components/layout/common/SiteNavi.vue';
 import SiteUser from './components/layout/user/SiteUser.vue';
+import { mapMutations } from 'vuex';
 export default {
   components: { 
     SiteHeader, 
@@ -43,7 +44,20 @@ export default {
       return this.$vuetify.breakpoint.xs ? '100%' : '360';
     }
   },
+  mounted() {
+    this.$socket.on('config:update', ( data ) => {
+      this.SET_CONFIG(data);
+    });
+    this.$socket.on('config:remove', ( key ) => {
+      this.SET_CONFIG({key, value : null});
+    });
+  },
+  destroyed() {
+    this.$socket.off('config:update');
+    this.$socket.off('config:remove');
+  },
   methods: {
+    ...mapMutations(['SET_CONFIG']),
     toggleDrawer() {
       this.drawer = !this.drawer;
     }

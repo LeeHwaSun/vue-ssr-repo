@@ -11,11 +11,19 @@ require('./plugins/pm2Bus');
 	const port = process.env.VUE_APP_SERVER_PORT || 3000;
 	const webServer = http.createServer(app);
 
+	// Socket.IO 적용
+	const socket = require('./plugins/socket');
+	socket(webServer);
+
 	// 설정정보 로드
 	const configModel = require('./api/_model/configModel');
 	console.log("설정 로드 전");
 	await configModel.load();
 	console.log("설정 로드 후");
+
+	/*setInterval(() => {
+
+	}, 5000);*/
 
 	let isDisableKeepAlive = false;
 	app.use((req, res, next) => {
