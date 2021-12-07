@@ -39,6 +39,7 @@
     "roboto-fontface": "*",
     "sharp": "^0.29.0",
     "socket.io": "^4.4.0",
+    "socket.io-redis": "^6.1.1",
     "vue": "^2.6.11",
     "vue-cookies": "^1.7.4",
     "vue-progressbar": "^0.7.5",

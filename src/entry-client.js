@@ -1,5 +1,5 @@
 import { createApp } from './main';
-import './plugins-client';
+import plugins from './plugins-client';
 
 const { app, router, store } = createApp();
 
