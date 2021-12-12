@@ -1,7 +1,7 @@
 <template>
     <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-on="on" v-bind="{ ...$attrs, ...attrs }" @click="$emit('click')">
+            <v-btn icon v-on="on" v-bind="{ ...$attrs, ...attrs }" :class="childClass" @click="$emit('click')">
                 <slot></slot>
             </v-btn>
         </template>
@@ -16,7 +16,8 @@ export default {
         label : {
             type : String,
             required : true,
-        }
+        },
+        childClass : [String, Object],
     }
 }
 </script>

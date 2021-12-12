@@ -29,4 +29,9 @@ router.delete('/:cfg_key', async (req, res) => {
     res.json(result);
 });
 
+router.get('/restart', async (req, res) => {
+    const result = await modelCall(configModel.restart, req);
+    res.json(result);
+})
+
 module.exports = router;

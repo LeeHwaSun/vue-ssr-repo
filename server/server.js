@@ -21,10 +21,6 @@ require('./plugins/pm2Bus');
 	await configModel.load();
 	console.log("설정 로드 후");
 
-	/*setInterval(() => {
-
-	}, 5000);*/
-
 	let isDisableKeepAlive = false;
 	app.use((req, res, next) => {
 		if (isDisableKeepAlive) {

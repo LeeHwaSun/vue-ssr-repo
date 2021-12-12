@@ -6,7 +6,7 @@
       <v-btn @click="leaveRoom">방 퇴장</v-btn>
       <v-btn @click="sendMsg">메시지 보내기</v-btn>
       <div>
-        {{$store.state.config.test1}}
+        {{$store.state.config.test_tt}}
       </div>
     </div>
   </div>

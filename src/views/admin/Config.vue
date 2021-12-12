@@ -3,8 +3,11 @@
         <v-toolbar class="mt-2">
             <v-toolbar-title>설정관리</v-toolbar-title>
             <v-spacer></v-spacer>
-            <tooltip-btn fab small label="Add" @click="addConfig">
+            <tooltip-btn fab small label="Add" color="primary" @click="addConfig">
                 <v-icon>mdi-plus</v-icon>
+            </tooltip-btn>
+            <tooltip-btn fab small label="Restart" color="error" @click="restartServer" chlidClass="ml-2" :loading="restart">
+                <v-icon>mdi-power</v-icon>
             </tooltip-btn>
         </v-toolbar>
         <v-row class="mt-2">
@@ -52,7 +55,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import TooltipBtn from '../../components/layout/common/TooltipBtn.vue';
 import MyDialog from '../../components/layout/common/MyDialog.vue';
 import ConfigForm from './ConfigComponent/ConfigForm.vue';
@@ -68,9 +71,13 @@ export default {
             group : -1,
             curItems : [],
             item : null,
+            restart: false,
         }
     },
     computed :  {
+        ...mapState({
+            online : (state) => state.socket.online,
+        }),
         groupItems() {
             const sets = new Set();
             this.items.forEach( (item) => {
@@ -86,6 +93,12 @@ export default {
         this.fetchData();
     },
     watch : {
+        online() {
+            if (this.online) {
+                this.$toast.info('서버가 재시작 되었습니다.');
+                this.restart = false;
+            }
+        },
         group() {
             this.setCurItems();
         }
@@ -175,6 +188,29 @@ export default {
             this.curItems = this.items.filter((item) => {
                 return item.cfg_group == this.groupName;
             });
+        },
+        async restartServer() {
+            const result = await this.$myNotify.confirm(
+                "서버 재시작 요청을 하시겠습니까?",
+                "서버 재시작",
+                { icon : "mdi-power", iconColor : "red" }
+            );
+
+            if (!result) return;
+
+            this.restart = true;
+            const data = await this.$axios.get('/api/config/restart');
+            if (data) {
+                setTimeout( () => {
+                    if (this.restart) {
+                        this.$toast.error('서버 재시작이 실패했습니다.\n잠시 후 다시 시도 하세요.');
+                        this.restart = false;
+                    }
+                }, 10000);
+            } else {
+                this.restart = false;
+            }
+            
         }
     }
 }

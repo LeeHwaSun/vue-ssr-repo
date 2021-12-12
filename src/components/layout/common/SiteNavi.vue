@@ -37,12 +37,18 @@ export default {
             return lg || xl;
         }
     },
+    watch : {
+        menu() {
+            this.initMenu();
+        }
+    },
     created() {
         this.initMenu();
     },
     methods: {
         initMenu() {
             const items = deepCopy(this.menu);
+            console.log(items);
             this.findActiveItem(items, null);
             this.items = items;
         },
