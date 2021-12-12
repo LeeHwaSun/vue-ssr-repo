@@ -2,7 +2,6 @@ const db = require('../../plugins/mysql');
 const TABLE = require('../../../util/TABLE');
 const { LV, isGrant } = require('../../../util/level');
 const sqlHelper = require('../../../util/sqlHelper');
-const { restart } = require('pm2');
 
 const configModel = {
     async load() {

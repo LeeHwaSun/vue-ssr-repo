@@ -67,8 +67,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('user', ['loginUserLocal', 'findIDLocal', 'findPasswordLocal']),
-    ...mapMutations('user', ['SET_USER', 'SET_TOKEN']),
+    ...mapActions('user', ['loginUserLocal', 'findIDLocal', 'findPasswordLocal', 'loginUserSocial']),
     async login(form) {
       this.isLoading = true;
       const data = await this.loginUserLocal(form);
@@ -124,8 +123,7 @@ export default {
       if (payload.err) {
         this.$toast.err(payload.err);
       } else {
-        this.SET_USER(payload.user);
-        this.SET_TOKEN(payload.token);
+        this.loginUserSocial(payload);
         this.$router.push('/');
         this.$toast.info(`${this.user.user_name}님 환영합니다!!!`);
       }

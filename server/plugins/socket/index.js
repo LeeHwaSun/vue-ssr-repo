@@ -2,6 +2,7 @@ require('dotenv').config();
 const { Server } = require("socket.io");
 const redisAdapter = require("socket.io-redis");
 const configHandler = require("./configHandler");
+const roomHandler = require('./roomHandler');
 const { REDIS_HOST, REDIS_PORT } = process.env;
 
 module.exports = function(webServer) {
@@ -9,6 +10,7 @@ module.exports = function(webServer) {
     io.adapter(redisAdapter({ host : REDIS_HOST, port : REDIS_PORT}));
     io.on("connection", (socket) => {
         configHandler(io, socket);
+        roomHandler(io, socket);
 
         console.log('a user connected ' + socket.id);
 
@@ -16,23 +18,27 @@ module.exports = function(webServer) {
             console.log('disconnect user')
         });
 
-        socket.on('room:join', ( roomName ) => {
-            console.log("room:join ", roomName);
-            socket.join(roomName);
-        });
-
-        socket.on('room:leave', ( roomName ) => {
-            console.log("room:leave ", roomName);
-            socket.leave(roomName);
-        });
-
         socket.on('room:send', ( data ) => {
-            console.log('room:send ', data);
-            const msg = data.msg + " 서버 응답";
-            //io.emit('room:msg', { msg });
-            //socket.broadcast.emit('room:msg', { msg });
-            io.to('roomtest').emit('room:msg', { msg });
-            //socket.to('roomtest').emit('room:msg', { msg });
+            const msg = data.msg;
+            switch (data.target) {
+                case 1:
+                    io.emit('room:msg', { msg });
+                    break;
+                case 2:
+                    socket.broadcast.emit('room:msg', { msg });
+                    break;
+                case 3:
+                    io.to('testroom').emit('room:msg', { msg });
+                    break;
+                case 4:
+                    socket.to('testroom').emit('room:msg', { msg });
+                    break;
+            }
         });
+
+        socket.on('room:chat', ( data ) => {
+            const { toId, fromId, userMsg } = data;
+            io.to(toId).emit('room:chat', { fromId, userMsg });
+        })
     });
 };

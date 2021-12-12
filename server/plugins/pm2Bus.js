@@ -20,7 +20,7 @@ pm2.launchBus(function(err, pm2_bus) {
     pm2_bus.on('config:restart', function( packet ) {
         console.log("SERVER RESTART");
         const exec = require('child_process').exec();
-        exec('pm2 reload all', (err) => {
+        exec('sudo pm2 reload all', (err) => {
             console.log("SERVER RESTART MSG :", err);
         })
     })

@@ -30,12 +30,13 @@ export const getters = {
 };
 
 export const actions = {
-    async initUser({ commit }) {
+    async initUser({ commit, dispatch }) {
         const { $axios } = Vue.prototype;
         const data = await $axios.get('/api/user/auth');
         if (data && data.user && data.token) {
             commit('SET_USER', data.user);
             commit('SET_TOKEN', data.token);
+            dispatch('socket/joinRoom', data.user.user_id, {root : true});
         }
     },
     async duplicateCheck(ctx, { field, value }) {
@@ -57,24 +58,31 @@ export const actions = {
         }
         return !!data;
     },
-    async loginUserLocal({ commit }, form) {
+    async loginUserLocal({ commit, dispatch }, form) {
         const { $axios } = Vue.prototype;
         const data = await $axios.post(`/api/user/loginUserLocal`, form);
-        if (data && data.user) {
+        if (data && data.user && data.token) {
             commit('SET_USER', data.user);
             commit('SET_TOKEN', data.token);
+            dispatch('socket/joinRoom', data.user.user_id, {root : true});
         }
         return !!data;
+    },
+    async loginUserSocial({ commit, dispatch }, data) {
+        commit('SET_USER', data.user);
+        commit('SET_TOKEN', data.token);
+        dispatch('socket/joinRoom', data.user.user_id, {root : true});
     },
     async checkPassword({ commit }, form) {
         const { $axios } = Vue.prototype;
         const data = await $axios.post(`/api/user/checkPassword`, form);
         return data;
     },
-    async logout({ commit, state }) {
+    async logout({ commit, state, dispatch }) {
         const user_name = state.user.user_name;
         const { $axios } = Vue.prototype;
         await $axios.get('/api/user/logout');
+        dispatch('socket/leaveRoom', state.user.user_id, {root : true});
         commit("SET_USER", null);
         commit('SET_TOKEN', null);
         return user_name;
