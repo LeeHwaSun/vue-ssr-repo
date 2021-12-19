@@ -118,8 +118,7 @@ const configModel = {
         return row.affectedRows == 1;
     },
     async restart(req) {
-        console.log(isGrant(req, LV.SUPER));
-        if (isGrant(req, LV.SUPER)) {
+        if (!isGrant(req, LV.SUPER)) {
             throw new Error('최고관리자만 서버 재시작 요청을 할 수 있습니다.');
         }
         process.send({

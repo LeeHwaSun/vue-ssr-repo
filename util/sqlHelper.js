@@ -35,6 +35,71 @@ const sqlHelper = {
 
         return { query, values };
     },
+    SelectLimit(table, options, cols = []) {
+        // 검색
+        let where = "";
+        let whereArr = [];
+        if (options.stf && options.stx && options.stc) {
+            for (let i in options.stf) {
+                const field = options.stf[i];
+                const text = options.stx[i];
+                const compare = options.stc[i];
+                if (field) {
+                    switch (compare) {
+                        case "like" :
+                            whereArr.push(` ${field} LIKE '%${text}%' `);
+                            break;
+                        case "null" :
+                            whereArr.push(` ${field} IS NULL `);
+                            break;
+                        case "not" :
+                            whereArr.push(` ${field} IS NOT NULL `);
+                            break;
+                        default : 
+                            whereArr.push(` ${field}${compare}'${text}' `);
+                            break;
+                    }
+                }
+            }
+        }
+        if (whereArr.length) {
+            where = ` WHERE ` + whereArr.join(' AND ');
+        }
+
+        // 정렬
+        let order = "";
+        let orderArr = [];
+        if (options.sortBy && options.sortDesc) {
+            for (let i in options.sortBy) {
+                let sort = options.sortBy[i];
+                let desc = options.sortDesc[i];
+                if (typeof(desc) == 'boolean') {
+                    sort += desc ? " ASC " : " DESC ";
+                } else {
+                    sort += desc == 'true' ? " ASC " : " DESC ";
+                }
+                orderArr.push(sort);
+            }
+        }
+        if (orderArr.length) {
+            order = " ORDER BY " + orderArr.join(", ");
+        }
+
+        // 페이지네이션
+        let limit = "";
+        if (options.page && options.itemsPerPage) {
+            const start = ( options.page - 1 ) * options.itemsPerPage;
+            limit = ` LIMIT ${start}, ${options.itemsPerPage}`;
+        }
+
+        let query = `SELECT * FROM ${table} ${where} ${order} ${limit}`;
+        if (cols.length) {
+            query = query.replace('*', cols.join(', '));
+        }
+
+        let countQuery = `SELECT COUNT(*) AS totalItems FROM ${table} ${where}`;
+        return { query, countQuery };
+    },
     Insert(table, data) {
         let query = `INSERT INTO ${table} ({1}) VALUES ({2})`;
         const fields = Object.keys(data);
@@ -104,7 +169,7 @@ const sqlHelper = {
         query = query.replace('{2}', prepare);
         query = query.replace('{3}', sets.join(', '));
         return { query, values : values.concat(values) };
-    }
+    },
 };
 
 module.exports = sqlHelper;

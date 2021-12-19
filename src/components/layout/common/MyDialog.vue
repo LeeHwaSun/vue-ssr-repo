@@ -2,10 +2,10 @@
     <v-dialog v-model="dialog" v-bind="$attrs">
         <v-card>
             <v-toolbar v-bind="$attrs">
-                <v-toolbar-title style="color:white">{{ label }}</v-toolbar-title>
+                <v-toolbar-title>{{ label }}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn icon @click="close">
-                    <v-icon style="color:white">mdi-close</v-icon>
+                    <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-toolbar>
             <v-card-text>
