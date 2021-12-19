@@ -92,7 +92,7 @@ export default {
         return {
             valid : true,
             form : null,
-            typeItems : ['String', 'Number', 'JSON', 'Secret'],
+            typeItems : ['String', 'Number', "CheckBox", 'JSON', 'Secret'],
             originKey : null,
         }
     },

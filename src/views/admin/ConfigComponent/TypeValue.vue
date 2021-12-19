@@ -5,6 +5,9 @@
     <div v-else-if="fieldType == 'Number'">
         <v-text-field label="Value" type="number" :value="value" @input="onInput" :readonly="readonly" :hide-details="readonly" />
     </div>
+    <div v-else-if="fieldType == 'CheckBox'">
+        <v-checkbox label="Check Value" :input-value="value" @change="onInput" :readonly="readonly" :hide-details="readonly" true-value="1" false-value="0" />
+    </div>
     <div v-else-if="fieldType == 'JSON'">
         <template v-if="readonly">
             <v-btn @click="jsonView" color="primary">JSON 보기</v-btn>

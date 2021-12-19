@@ -185,9 +185,8 @@ export default {
             this.$axios.put('/api/config', payload);
         },
         setCurItems() {
-            this.curItems = this.items.filter((item) => {
-                return item.cfg_group == this.groupName;
-            });
+            this.curItems = this.items.filter((item) => item.cfg_group == this.groupName)
+                                      .sort((a, b) => a.cfg_sort - b.cfg_sort);
         },
         async restartServer() {
             const result = await this.$myNotify.confirm(

@@ -24,15 +24,15 @@
             </v-tab-item>
           </v-tabs-items>
         </v-card-text>
-        <!--v-card-text class="mt-n4">
+        <v-card-text class="mt-n4" v-if="config.useLoginGoogle">
           <v-btn @click="loginGoogle" block color="secondary">Google Login</v-btn>
-        </v-card-text-->
-        <!--v-card-text class="mt-n4">
+        </v-card-text>
+        <v-card-text class="mt-n4" v-if="config.useLoginKakao">
           <v-btn @click="loginKakao" block color="secondary">Kakao Login</v-btn>
-        </v-card-text-->
-        <!--v-card-text class="mt-n4">
+        </v-card-text>
+        <v-card-text class="mt-n4" v-if="config.useLoginNaver">
           <v-btn @click="loginNaver" block color="secondary">Naver Login</v-btn>
-        </!--v-card-text-->
+        </v-card-text>
         <v-card-text class="mt-n4">
           <v-btn to="/join" block>Join to User</v-btn>
         </v-card-text>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import SiteHeader from '../../components/layout/common/SiteHeader.vue';
 import SignInForm from '../../components/auth/SignInForm.vue';
 import FindIdForm from '../../components/auth/FindIdForm.vue';
@@ -64,6 +64,7 @@ export default {
   computed : {
     ...mapState({
       user : state => state.user.user,
+      config : state => state.config,
     }),
   },
   methods: {
