@@ -100,7 +100,7 @@ const userModel = {
         // 레벨은 관리자 모드 admMode true
         const admMode = payload.admMode;
         const user_id = payload.user_id;
-        const deleteImage = payload.deleteImage;
+        const deleteImage = typeof(payload.deleteImage) == 'string' ? payload.deleteImage == 'true' : payload.deleteImage;
         delete payload.admMode;
         delete payload.user_id;
         delete payload.deleteImage;
@@ -419,8 +419,8 @@ const userModel = {
         }
         const options = req.query;
         const sql = sqlHelper.SelectLimit(TABLE.USER_INFO, options);
-        const [items] = await db.execute(sql.query);
-        const [[{totalItems}]] = await db.execute(sql.countQuery);
+        const [items] = await db.execute(sql.query, sql.values);
+        const [[{totalItems}]] = await db.execute(sql.countQuery, sql.values);
         items.forEach(item => {
             clearUserField(item);
         });

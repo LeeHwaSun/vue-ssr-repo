@@ -31,9 +31,11 @@ export default {
     },
     methods : {
         open() {
+            this.$emit('onOpen');
             this.dialog = true;
         },
         close() {
+            this.$emit('onClose');
             this.dialog = false;
         }
     }

@@ -46,7 +46,7 @@
             v-model="form.user_birth"
             label="생년월일"
             prepend-icon="mdi-calendar"
-            :rules="rules.date( { label:'생년월일' }  )"
+            :rules="rules.date( { label:'생년월일', required: !admMode }  )"
             class="mb-5"
         />
         <input-radio 
@@ -62,12 +62,13 @@
             prepend-icon="mdi-phone"
             v-model="form.user_phone"
             class="mb-5"
-            :rules="rules.phone()"
+            :rules="rules.phone({ required : !admMode })"
         />
         <input-post 
             :zipcode.sync="form.user_zip"
             :addr1.sync="form.user_addr1"
             :addr2.sync="form.user_addr2"
+            :required="!admMode"
         />
         <div class="d-flex align-center">
             <display-avatar :user="user" />
