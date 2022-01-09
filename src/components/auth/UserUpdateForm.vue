@@ -1,6 +1,13 @@
 <template>
     <v-form @submit.prevent="save" ref="form" v-model="valid" lazy-validation>
+        <v-text-field 
+            v-if="!!form.user_provider" 
+            v-model="form.user_provider" 
+            label="SNS 제공자"
+            prepend-icon="mdi-account-network"
+            readonly />
         <input-duplicate-check 
+            v-else
             ref="id"
             label="아이디"
             prepend-icon="mdi-account"
@@ -42,6 +49,19 @@
             :origin="user.user_email"
             class="mb-5"
         />
+        <div v-if="admMode" class="pb-2">
+            <div class="pl-10 text-caption">레벨 {{ form.user_level }} : <span>{{ lvLabel }}</span></div>
+            <v-slider
+                v-model="form.user_level"
+                :min="LV.BLOCK"
+                :max="LV.SUPER"
+                ticks="always"
+                thumb-label
+                prepend-icon="mdi-chevron-triple-up"
+                hide-details
+            >
+            </v-slider>
+        </div>
         <input-date 
             v-model="form.user_birth"
             label="생년월일"
@@ -87,7 +107,8 @@
         
         
         <v-btn type="submit" block color="primary" class="mt-5" :loading="isLoading">Update</v-btn>
-        <v-btn block color="error" class="mt-5" :loading="isLoading" @click="$emit('onLeave')">Leave</v-btn>
+        <v-btn v-if="!this.isLeave()" block color="error" class="mt-5" :loading="isLoading" @click="$emit('onLeave')">Leave</v-btn>
+        <v-btn v-else block color="error" class="mt-5" :loading="isLoading" @click="$emit('onRestore')">Restore</v-btn>
     </v-form>
 </template>
 
@@ -101,6 +122,7 @@ import InputPost from '../inputForms/InputPost.vue';
 import validateRules from '../../../util/validateRules';
 import { deepCopy } from '../../../util/lib';
 import DisplayAvatar from '../layout/user/DisplayAvatar.vue';
+import { LV, LV_LABEL } from '../../../util/level';
 export default {
     components : { 
         InputDuplicateCheck, 
@@ -139,16 +161,22 @@ export default {
                 { label : "여자", value : "F" },
             ],
             confirmPw : "",
+            leaveDate : null,
         }
     },
     computed: {
         rules : () => validateRules,
+        LV : () => LV,
+        lvLabel() {
+            return LV_LABEL(this.form.user_level);
+        },
     },
     created() {
         this.form = deepCopy(this.user);
         this.form.user_pwd = "",
         this.form.admMode = this.admMode;
         this.form.deleteImage = false;
+        this.leaveDate = this.form.user_leave_at;
         delete this.form.user_create_at;
 		delete this.form.user_create_ip;
 		delete this.form.user_update_at;
@@ -169,6 +197,9 @@ export default {
                 formData.append(key, this.form[key]);
             }
             this.$emit("onSave", formData);
+        },
+        isLeave() {
+            return this.leaveDate ? true : false;
         }
     }
 }

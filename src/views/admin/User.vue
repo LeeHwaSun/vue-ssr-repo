@@ -32,6 +32,24 @@
             :loading="loading"
             hide-default-footer
         >
+            <template v-slot:item.user_id="{ item }">
+                <display-id :user="item" />
+            </template>
+            <template v-slot:item.user_name="{ item }">
+                <display-name :user="item" />
+            </template>
+            <template v-slot:item.user_level="{ item }">
+                <display-level :user="item" />
+            </template>
+            <template v-slot:item.user_create_at="{ item }">
+                <display-time :time="item.user_create_at"/>
+            </template>
+            <template v-slot:item.user_update_at="{ item }">
+                <display-time :time="item.user_update_at"/>
+            </template>
+            <template v-slot:item.user_leave_at="{ item }">
+                <display-time :time="item.user_leave_at"/>
+            </template>
             <template v-slot:item.cmd="{item}">
                 <tooltip-btn icon label="Modify" @click="openDialog(item)">
                     <v-icon>mdi-pencil</v-icon>
@@ -58,6 +76,7 @@
                 :admMode="true"
                 @onSave="saveUser"
                 @onLeave="leaveUser"
+                @onRestore="restoreUser"
             />
         </my-dialog>
     </v-container>
@@ -70,9 +89,22 @@ import TooltipBtn from '../../components/layout/common/TooltipBtn.vue';
 import MyDialog from '../../components/layout/common/MyDialog.vue';
 import UserUpdateForm from '../../components/auth/UserUpdateForm.vue';
 import { deepCopy } from '../../../util/lib';
+import DisplayId from '../../components/layout/user/DisplayId.vue';
+import DisplayName from '../../components/layout/user/DisplayName.vue';
+import DisplayLevel from '../../components/layout/user/DisplayLevel.vue';
+import DisplayTime from '../../components/layout/user/DisplayTime.vue';
 import axios from 'axios';
 export default {
-    components : { SearchField, TooltipBtn, MyDialog, UserUpdateForm },
+    components : { 
+        SearchField, 
+        TooltipBtn, 
+        MyDialog, 
+        UserUpdateForm, 
+        DisplayId, 
+        DisplayName,
+        DisplayLevel,
+        DisplayTime,
+    },
     name : "AdmUser",
     title : "회원관리",
     data() {
@@ -85,14 +117,14 @@ export default {
                     searchable : true,
                 },
                 {
-                    text : "이메일",
-                    value : "user_email",
+                    text : "이름",
+                    value : "user_name",
                     align : "start",
                     searchable : true,
                 },
                 {
-                    text : "이름",
-                    value : "user_name",
+                    text : "이메일",
+                    value : "user_email",
                     align : "start",
                     searchable : true,
                 },
@@ -292,6 +324,27 @@ export default {
             const data = await this.$axios.patch(`/api/user`, form);
             if (data) {
                 this.$toast.info(`${this.curUser.user_name}님 탈퇴 처리 하였습니다.`);
+                this.$refs.dialog.close();
+                this.pageRouting = true;
+                this.fetchData();
+            }
+        },
+        async restoreUser() {
+            const result = await this.$myNotify.confirm(`${this.curUser.user_name} 회원 복원 처리하시겠습니까?`, '회원탈퇴 처리', {
+                icon : 'mdi-alert',
+            });
+
+            if (!result) return;
+
+            this.loading = true;
+
+            const form = {
+                user_id : this.curUser.user_id,
+                user_leave_at : null
+            }
+            const data = await this.$axios.patch(`/api/user`, form);
+            if (data) {
+                this.$toast.info(`${this.curUser.user_name}님 복원 처리 하였습니다.`);
                 this.$refs.dialog.close();
                 this.pageRouting = true;
                 this.fetchData();

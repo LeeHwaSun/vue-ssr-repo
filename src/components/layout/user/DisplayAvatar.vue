@@ -1,5 +1,5 @@
 <template>
-    <v-avatar color="accent" size="32">
+    <v-avatar color="accent" :size="size">
         <template v-if="user">
         <v-img 
             v-if="hasImage" 
@@ -18,6 +18,10 @@ export default {
         user : {
             type: Object,
             default : null,
+        },
+        size : {
+            type : [String, Number],
+            default : 32
         }
     },
     data() {
@@ -32,11 +36,10 @@ export default {
     },
     computed : {
         userPhoto() {
-            const user_provider = this.user.user_provider;
-            if (user_provider && (user_provider == 'google' || user_provider == 'kakao')) {
+            if (this.user.user_photo && !this.user.user_photo.startsWith('/upload')) {
                 return this.user.user_photo;
             } else {
-                return this.user.user_photo + '?w=32&h=32';
+                return this.user.user_photo + `?w=${this.size}&h=${this.size}`;
             }
         }
     },
