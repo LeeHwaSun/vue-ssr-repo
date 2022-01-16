@@ -50,7 +50,8 @@
             class="mb-5"
         />
         <div v-if="admMode" class="pb-2">
-            <div class="pl-10 text-caption">레벨 {{ form.user_level }} : <span>{{ lvLabel }}</span></div>
+            <input-level label="레벨" v-model="form.user_level" :icon="mdi-chevron-triple-up" /> 
+            <!--<div class="pl-10 text-caption">레벨 {{ form.user_level }} : <span>{{ lvLabel }}</span></div>
             <v-slider
                 v-model="form.user_level"
                 :min="LV.BLOCK"
@@ -60,7 +61,7 @@
                 prepend-icon="mdi-chevron-triple-up"
                 hide-details
             >
-            </v-slider>
+            </v-slider>-->
         </div>
         <input-date 
             v-model="form.user_birth"
@@ -122,7 +123,7 @@ import InputPost from '../inputForms/InputPost.vue';
 import validateRules from '../../../util/validateRules';
 import { deepCopy } from '../../../util/lib';
 import DisplayAvatar from '../layout/user/DisplayAvatar.vue';
-import { LV, LV_LABEL } from '../../../util/level';
+import InputLevel from '../inputForms/InputLevel.vue';
 export default {
     components : { 
         InputDuplicateCheck, 
@@ -131,7 +132,8 @@ export default {
         InputRadio,
         InputPhoneNumber,
         InputPost,
-        DisplayAvatar
+        DisplayAvatar,
+        InputLevel,
     },
     name : "UserUpdateForm",
     props : {
@@ -166,10 +168,6 @@ export default {
     },
     computed: {
         rules : () => validateRules,
-        LV : () => LV,
-        lvLabel() {
-            return LV_LABEL(this.form.user_level);
-        },
     },
     created() {
         this.form = deepCopy(this.user);

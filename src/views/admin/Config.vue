@@ -37,8 +37,6 @@
             label="설정 추가" 
             ref="dialog" 
             max-width="500" 
-            dark
-            color="primary"
             persistent
         >
             <config-form 

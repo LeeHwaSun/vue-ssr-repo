@@ -35,7 +35,8 @@ export default {
         return {
             admMenus: [
                 { title : "Config", icon : "mdi-cog", to : "/adm/config" },
-                { title : "User", icon : "mdi-account-cog", to : "/adm/user" }
+                { title : "User", icon : "mdi-account-cog", to : "/adm/user" },
+                { title : "Menu", icon : "mdi-menu", to : "/adm/menu"},
             ]
         }
         

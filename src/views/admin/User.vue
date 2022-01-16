@@ -39,7 +39,7 @@
                 <display-name :user="item" />
             </template>
             <template v-slot:item.user_level="{ item }">
-                <display-level :user="item" />
+                <display-level :level="item.user_level" />
             </template>
             <template v-slot:item.user_create_at="{ item }">
                 <display-time :time="item.user_create_at"/>
@@ -48,7 +48,7 @@
                 <display-time :time="item.user_update_at"/>
             </template>
             <template v-slot:item.user_leave_at="{ item }">
-                <display-time :time="item.user_leave_at"/>
+                <display-time v-if="item.user_leave_at" :time="item.user_leave_at"/>
             </template>
             <template v-slot:item.cmd="{item}">
                 <tooltip-btn icon label="Modify" @click="openDialog(item)">

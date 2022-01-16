@@ -6,6 +6,7 @@ import Error from '../views/Error.vue'
 import ModifyPassword from '../views/user/ModifyPassword.vue';
 import Config from '../views/admin/Config.vue';
 import User from '../views/admin/User.vue';
+import Menu from '../views/admin/Menu.vue';
 
 const routes = [
     {
@@ -40,14 +41,20 @@ const routes = [
     {
         path: '/adm/config',
         name: 'AdmConfig',
-        //component: () => import(/* webpackChunkName: "error" */ '../views/admin/Config.vue')
+        //component: () => import(/* webpackChunkName: "admConfig" */ '../views/admin/Config.vue')
         component: Config
     },
     {
         path: '/adm/user',
         name: 'AdmUser',
-        //component: () => import(/* webpackChunkName: "error" */ '../views/admin/Config.vue')
+        //component: () => import(/* webpackChunkName: "admUser" */ '../views/admin/Config.vue')
         component: User
+    },
+    {
+        path: '/adm/menu',
+        name: 'AdmMenu',
+        //component: () => import(/* webpackChunkName: "admMenu" */ '../views/admin/Config.vue')
+        component: Menu
     },
     {
         path: '*',
