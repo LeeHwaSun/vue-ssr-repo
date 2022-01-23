@@ -33,7 +33,7 @@
                 :readonly="!!item"
                 :rules="[
                     rules.required({ label : '키' }),
-                    rules.cfgKey(),
+                    ...rules.cfgKey(),
                 ]"
             />
         </div>
@@ -71,8 +71,9 @@ import { LV } from '../../../../util/level';
 import validateRules from '../../../../util/validateRules';
 import { deepCopy, findParentVm } from '../../../../util/lib';
 import jsonStringify from 'json-stable-stringify';
+import InputLevel from '../../../components/inputForms/InputLevel.vue';
 export default {
-    components : { InputDuplicateCheck, TypeValue },
+    components : { InputDuplicateCheck, TypeValue, InputLevel },
     name : "ConfigForm",
     props : {
         keyCheck : {

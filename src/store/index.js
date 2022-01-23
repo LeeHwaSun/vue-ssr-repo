@@ -4,6 +4,15 @@ import modules from "./modules";
 
 Vue.use(Vuex)
 
+function menuAccess(ref, arr) {
+  arr.forEach(el => {
+    ref[el.to] = el.grant;
+    if (el.subItems && el.subItems.length) {
+      menuAccess(ref, el.subItems);
+    }
+  });
+}
+
 const store = new Vuex.Store({
   state: {
     appReady : false,
@@ -23,6 +32,16 @@ const store = new Vuex.Store({
       } else {
         Vue.set(state.config, key, value);
       }
+    }
+  },
+  getters : {
+    access(state) {
+      const obj = {};
+      if (state.config.menu) {
+        menuAccess(obj, state.config.menu);
+      }
+      console.log(obj);
+      return obj;
     }
   },
   actions: {

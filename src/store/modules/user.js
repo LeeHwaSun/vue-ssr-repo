@@ -26,6 +26,12 @@ export const getters = {
         if (state.user) {
             return state.user && state.user.user_level >= LV.SUPER;
         }
+    },
+    GRANT(state) {
+        if (state.user) {
+            return state.user.user_level;
+        }
+        return LV.BLOCK;
     }
 };
 

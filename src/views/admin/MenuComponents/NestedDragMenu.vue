@@ -51,10 +51,10 @@
                                 class="ml-2"
                                 readonly 
                             />
-                            <tooltip-btn label="Modify" icon small color="primary" childClass="ml-2">
+                            <tooltip-btn label="Modify" icon small color="primary" childClass="ml-2" @click="modifyItem(item)">
                                 <v-icon>mdi-pencil</v-icon>
                             </tooltip-btn>
-                            <tooltip-btn label="Remove" icon small color="error" childClass="ml-2">
+                            <tooltip-btn label="Remove" icon small color="error" childClass="ml-2" @click="removeItem(item)">
                                 <v-icon>mdi-trash-can</v-icon>
                             </tooltip-btn>
                         </v-sheet>
@@ -75,6 +75,7 @@
 import DisplayLevel from '../../../components/layout/user/DisplayLevel.vue';
 import TooltipBtn from '../../../components/layout/common/TooltipBtn.vue';
 import draggable from 'vuedraggable';
+import { findParentVm } from '../../../../util/lib';
 export default {
     components : { draggable, DisplayLevel, TooltipBtn },
     name : "NestedDragMenu",
@@ -106,6 +107,14 @@ export default {
     methods : {
         toggleSub(item) {
             item.show = !item.show;
+        },
+        removeItem(item) {
+            const idx = this.items.indexOf(item);
+            this.items.splice(idx, 1);
+        },
+        modifyItem(item) {
+            const admMenu = findParentVm(this, 'AdmMenu');
+            admMenu.modifyMenu(item, this.items);
         }
     }
 }
