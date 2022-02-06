@@ -50,18 +50,17 @@
             class="mb-5"
         />
         <div v-if="admMode" class="pb-2">
-            <input-level label="레벨" v-model="form.user_level" :icon="mdi-chevron-triple-up" /> 
-            <!--<div class="pl-10 text-caption">레벨 {{ form.user_level }} : <span>{{ lvLabel }}</span></div>
+            <div class="pl-10 text-caption">레벨 {{ form.user_level }} : <span>{{ lvLabel }}</span></div>
             <v-slider
                 v-model="form.user_level"
                 :min="LV.BLOCK"
-                :max="LV.SUPER"
+                :max="isGrant ? LV.SUPER : admin.user_level"
                 ticks="always"
                 thumb-label
                 prepend-icon="mdi-chevron-triple-up"
                 hide-details
             >
-            </v-slider>-->
+            </v-slider>
         </div>
         <input-date 
             v-model="form.user_birth"
@@ -107,9 +106,9 @@
         </div>
         
         
-        <v-btn type="submit" block color="primary" class="mt-5" :loading="isLoading">Update</v-btn>
-        <v-btn v-if="!this.isLeave()" block color="error" class="mt-5" :loading="isLoading" @click="$emit('onLeave')">Leave</v-btn>
-        <v-btn v-else block color="error" class="mt-5" :loading="isLoading" @click="$emit('onRestore')">Restore</v-btn>
+        <v-btn type="submit" :disabled="isGrant" block color="primary" class="mt-5" :loading="isLoading">Update</v-btn>
+        <v-btn v-if="!this.isLeave()" :disabled="isGrant" block color="error" class="mt-5" :loading="isLoading" @click="$emit('onLeave')">Leave</v-btn>
+        <v-btn v-else block color="error" :disabled="isGrant" class="mt-5" :loading="isLoading" @click="$emit('onRestore')">Restore</v-btn>
     </v-form>
 </template>
 
@@ -124,6 +123,8 @@ import validateRules from '../../../util/validateRules';
 import { deepCopy } from '../../../util/lib';
 import DisplayAvatar from '../layout/user/DisplayAvatar.vue';
 import InputLevel from '../inputForms/InputLevel.vue';
+import { mapState, mapGetters } from 'vuex';
+import { LV, LV_LABEL, LV_COLOR} from '../../../util/level';
 export default {
     components : { 
         InputDuplicateCheck, 
@@ -168,6 +169,22 @@ export default {
     },
     computed: {
         rules : () => validateRules,
+        LV : () => LV,
+        LV_COLOR : () => LV_COLOR,
+        lvLabel() {
+            return LV_LABEL(this.form.user_level);
+        },
+        ...mapState({
+            admin : state => state.user.user,
+        }),
+        ...mapGetters('user', ['isSuper']),
+        isGrant() {
+            return !(
+                this.admin.user_id === this.user.user_id || 
+                this.isSuper || 
+                this.user.user_level < this.admin.user_level
+            );
+        }
     },
     created() {
         this.form = deepCopy(this.user);

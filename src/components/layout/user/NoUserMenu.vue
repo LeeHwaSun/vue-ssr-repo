@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="pt-4 px-1">
         <v-card-actions>
           <v-btn block to="/login" color="primary">Login</v-btn>
         </v-card-actions>

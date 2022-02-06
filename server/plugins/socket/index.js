@@ -3,6 +3,7 @@ const { Server } = require("socket.io");
 const redisAdapter = require("socket.io-redis");
 const configHandler = require("./configHandler");
 const roomHandler = require('./roomHandler');
+const userHandler = require('./userHandler');
 const { REDIS_HOST, REDIS_PORT } = process.env;
 
 module.exports = function(webServer) {
@@ -11,6 +12,7 @@ module.exports = function(webServer) {
     io.on("connection", (socket) => {
         configHandler(io, socket);
         roomHandler(io, socket);
+        userHandler(io, socket);
 
         console.log('a user connected ' + socket.id);
 

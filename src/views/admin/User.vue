@@ -301,10 +301,11 @@ export default {
             const data = await this.$axios.patch(`/api/user`, form);
             this.loading = false;
             if (data) {
-                console.log(data);
                 const idx = this.items.indexOf(this.curUser);
                 this.items.splice(idx, 1, data);
                 this.$toast.info(`${data.user_name} 정보 수정 하였습니다.`);
+                // 소켓을 보내면 회원아이디 룸에 보내면 된다.
+                this.$socket.emit("user:admUpdate", data);
                 this.$refs.dialog.close();
             }
         },

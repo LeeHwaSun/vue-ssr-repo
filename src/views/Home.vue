@@ -7,8 +7,6 @@
       <v-btn @click="sendMsg(1)">전체</v-btn>
       <v-btn @click="sendMsg(2)">브로드캐스트</v-btn>
       <v-btn @click="sendMsg(3)">룸</v-btn>
-      <v-btn @click="sendMsg(4)">룸 브로드캐스트</v-btn>
-      <div>{{$store.state.config.test_tt}}</div>
     </div>
     <div>
       <v-text-field v-model="toId" label="회원ID"></v-text-field>

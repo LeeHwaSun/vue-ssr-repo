@@ -1,5 +1,6 @@
 <template>
     <v-form
+        v-if="user"
         @submit.prevent="save" 
         ref="form" 
         v-model="valid" 
@@ -52,7 +53,7 @@
             :label="`접근레벨 (${form.cfg_level})`"
             v-model="form.cfg_level"
             :min="LV.ADMIN"
-            :max="LV.SUPER"
+            :max="user.user_level"
             thumb-color="primary"
             thumb-label
         ></v-slider>
@@ -72,6 +73,7 @@ import validateRules from '../../../../util/validateRules';
 import { deepCopy, findParentVm } from '../../../../util/lib';
 import jsonStringify from 'json-stable-stringify';
 import InputLevel from '../../../components/inputForms/InputLevel.vue';
+import { mapState } from 'vuex';
 export default {
     components : { InputDuplicateCheck, TypeValue, InputLevel },
     name : "ConfigForm",
@@ -100,6 +102,9 @@ export default {
     computed : {
         LV : () => LV,
         rules : () => validateRules,
+        ...mapState({
+            user : state => state.user.user,
+        })
     },
     created() {
         this.init();

@@ -40,7 +40,6 @@ const store = new Vuex.Store({
       if (state.config.menu) {
         menuAccess(obj, state.config.menu);
       }
-      console.log(obj);
       return obj;
     }
   },

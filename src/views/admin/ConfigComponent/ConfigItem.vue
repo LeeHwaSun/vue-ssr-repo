@@ -1,5 +1,5 @@
 <template>
-    <li>
+    <li v-if="user">
         <v-icon class="handle">mdi-drag</v-icon>
         <div>
             <div>
@@ -18,7 +18,7 @@
                     </v-tooltip>
                 </div>
                 <div>
-                    <v-btn @click="$emit('update', item)" icon><v-icon>mdi-pencil</v-icon></v-btn>
+                    <v-btn @click="$emit('update', item)" icon :disabled="isGrant"><v-icon>mdi-pencil</v-icon></v-btn>
                 </div>
             </div>
             <div>
@@ -41,7 +41,7 @@
                     <span>클라이언트 접근유무</span>
                 </v-tooltip>
                 <div>
-                    <v-btn @click="$emit('remove', item)" icon><v-icon>mdi-delete</v-icon></v-btn>
+                    <v-btn @click="$emit('remove', item)" icon :disabled="isGrant"><v-icon>mdi-delete</v-icon></v-btn>
                 </div>
             </div>
         </div>
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import TypeValue from './TypeValue.vue';
 export default {
     components : { TypeValue, },
@@ -57,6 +58,14 @@ export default {
         item : {
             type : Object,
             required : true,
+        }
+    },
+    computed : {
+        ...mapState({
+            user : state => state.user.user,
+        }),
+        isGrant() {
+            return this.item.cfg_level > this.user.user_level;
         }
     }
 }

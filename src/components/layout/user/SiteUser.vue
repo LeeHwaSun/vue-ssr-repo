@@ -8,13 +8,21 @@
         </v-btn>
       </template>
       <v-card>
-        <v-card-text>
-          <v-switch label="Dark Theme" :input-value="darkMode" @change="setDarkMode($event)"></v-switch>
-        </v-card-text>
-        <user-menu v-if="user" @open="openDialog" />
-        <no-user-menu v-else />
+        <v-sheet width="200">
+          <user-menu v-if="user" @open="openDialog" />
+          <no-user-menu v-else />
+        </v-sheet>
       </v-card>
     </v-menu>
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn v-on="on" v-bind="attrs" icon @click="setDarkMode(!darkMode)">
+          <v-icon v-if="darkMode">mdi-lightbulb-on-outline</v-icon>
+          <v-icon v-else>mdi-lightbulb-outline</v-icon>
+        </v-btn>
+      </template>
+      <span>{{ darkMode ? "Light Mode" : "Dark Mode" }}</span>
+    </v-tooltip>
     <v-dialog v-if="user" v-model="dialog" persistent max-width="500">
       <v-card>
         <v-toolbar>
