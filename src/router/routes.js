@@ -7,6 +7,7 @@ import ModifyPassword from '../views/user/ModifyPassword.vue';
 import Config from '../views/admin/Config.vue';
 import User from '../views/admin/User.vue';
 import Menu from '../views/admin/Menu.vue';
+import BoardRenderer from '../views/admin/BoardRenderer.vue';
 
 const routes = [
     {
@@ -55,6 +56,12 @@ const routes = [
         name: 'AdmMenu',
         //component: () => import(/* webpackChunkName: "admMenu" */ '../views/admin/Menu.vue')
         component: Menu
+    },
+    {
+        path: '/adm/board/*',
+        name: 'AdmBoard',
+        //component: () => import(/* webpackChunkName: "admBoard" */ '../views/admin/board/BoardList.vue')
+        component: BoardRenderer
     },
     {
         path: '*',

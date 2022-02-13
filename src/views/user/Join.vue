@@ -22,7 +22,7 @@ import SignUpForm from '../../components/auth/SignUpForm.vue';
 export default {
     components: { SignUpForm },
     name: "Join",
-    title: "회원가입",
+    title: "회원 가입",
     data() {
         return {
             isLoading : false,

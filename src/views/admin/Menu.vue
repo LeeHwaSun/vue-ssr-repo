@@ -35,6 +35,7 @@ import MenuForm from './MenuComponents/MenuForm.vue';
 export default {
     components : { TooltipBtn, NestedDragMenu, MyDialog, MenuForm, },
     name : "AdmMenu",
+    title : "메뉴 관리",
     data() {
         return {
             items : [],

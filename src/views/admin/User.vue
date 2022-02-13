@@ -106,7 +106,7 @@ export default {
         DisplayTime,
     },
     name : "AdmUser",
-    title : "회원관리",
+    title : "회원 관리",
     data() {
         return {
             headersOrigin : [
