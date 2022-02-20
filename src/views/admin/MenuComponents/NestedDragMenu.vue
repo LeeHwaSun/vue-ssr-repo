@@ -123,10 +123,5 @@ export default {
 </script>
 
 <style>
-.menu-drag-container .menu-drag-item { position: relative; }
-.menu-drag-container .menu-drag-item .icon { display: none; }
-.menu-drag-container .menu-drag-subitem { position: relative; margin-left: 2rem; }
-.menu-drag-container .menu-drag-subitem .menu-drag-item .icon { display: block; position: absolute; left: -1.75rem; top: 1rem; }
-.menu-drag-container .ghost { cursor: grab; }
-.menu-drag-container .menu-drag-zone { padding-bottom : 1rem; }
+
 </style>

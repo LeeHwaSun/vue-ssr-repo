@@ -6,7 +6,7 @@ const rules = {
         return v => !!v || `${label}은(는) 필수 입력입니다.`;
     },
     alphaNum() {
-        return v => !!v ? /^[a-zA-Z0-9]+$/.test(v) || '영,숫자만 입력하세요.' : true;
+        return v => !!v ? /^[a-zA-Z0-9_]+$/.test(v) || '영,숫자만 입력하세요.' : true;
     },
     pattern({ label, pattern, info = null }) {
         return v => !!v ? pattern.test(v) || info || `${label}은(는) 형식에 맞게 입력하세요.` : true;

@@ -17,11 +17,13 @@
                 v-model="form.brd_table"
                 counter="30"
                 :readonly="!!table"
+                :rules="[rules.alphaNum(), rules.required({ label : '게시판 ID' })]"
             />
             <v-text-field 
                 label="게시판 제목"
                 v-model="form.brd_subject"
                 counter="100"
+                :rules="[rules.required({ label : '게시판 제목' })]"
             />
             <v-select 
                 label="게시판 스킨"
@@ -29,6 +31,7 @@
                 :items="skins"
             />
             <!-- 정렬 규칙 -->
+            <board-sort :items="form.brd_sort" class="mb-4" />
             <div class="d-flex">
                 <v-switch 
                     label="카테고리 사용"
@@ -38,6 +41,7 @@
                 <div style="flex: 1;" class="ml-3">
                     <v-combobox
                         label="카테고리"
+                        v-model="form.brd_category"
                         multiple
                         chips
                         :disabled="!form.brd_use_category"
@@ -49,7 +53,7 @@
                     >
                         <template v-slot:selection="{ attrs, item, parent, selected }">
                             <v-chip v-bind="attrs" :input-value="selected" label small>
-                                <span>{{item}}</span>
+                                <span>{{ item }}</span>
                                 <v-icon small right @click="parent.selectItem(item)">mdi-close</v-icon>
                             </v-chip>
                         </template>
@@ -138,8 +142,10 @@
 <script>
 import { LV } from '../../../../util/level';
 import BoardSlider from './Components/BoardSlider.vue';
+import BoardSort from './Components/BoardSort.vue';
+import validateRules from '../../../../util/validateRules';
 export default {
-    components : { BoardSlider, },
+    components : { BoardSlider, BoardSort, },
     name : "AdmBoardForm",
     props : {
         table : String,
@@ -161,9 +167,11 @@ export default {
         btnLabel() {
             return this.table ? "Modify" : "Create";
         },
+        rules : () => validateRules,
     },
     mounted() {
         this.init();
+        this.fetchSkinList();
     },
     methods : {
         init() {
@@ -186,8 +194,8 @@ export default {
                     brd_category : [],
                     brd_use_category : 0,
                     brd_sort : [
-                        {by : "wr_grp", desc : 0},
-                        {by : "wr_order", desc : 1}
+                        {by : "wr_grp", desc : 0 },
+                        {by : "wr_order", desc : 1 }
                     ],
                     wr_fields : [],
                 };
@@ -198,9 +206,17 @@ export default {
                 this.form = form;
             }
         },
-        save() {
+        async fetchSkinList() {
+            const data = await this.$axios.get('/api/admin/board/skinList');
+            this.skins = data;
+        },
+        async save() {
+            this.$refs.form.validate();
+            await this.$nextTick();
+            if (!this.valid) return;
             console.log(this.form);
-        }
+            // TODO : 서버로 데이터 보내서 게시판 생성 하자
+        },
     }
 }
 </script>
