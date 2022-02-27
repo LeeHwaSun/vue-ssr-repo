@@ -51,6 +51,7 @@ require('./plugins/pm2Bus');
 	// Global
 	global.USER_PROFILE_PATH = path.join(__dirname, './upload/userProfile');
 	fs.mkdirSync(USER_PROFILE_PATH, { recursive : true });
+	global.UPLOAD_PATH = path.join(__dirname, './upload');
 
 	// Passport
 	const passport = require('./plugins/passport');

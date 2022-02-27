@@ -174,9 +174,14 @@ export default {
         this.fetchSkinList();
     },
     methods : {
-        init() {
+        async init() {
             if (this.table) {
                 // 게시판 정보를 가지고 와서 넣어주자
+                const data = await this.$axios.get(`/api/admin/board/${this.table}`);
+                data.brd_category = JSON.parse(data.brd_category);
+                data.brd_sort = JSON.parse(data.brd_sort);
+                data.wr_fields = JSON.parse(data.wr_fields);
+                this.form = data;
             } else {
                 // 신규
                 const form = {
@@ -214,8 +219,19 @@ export default {
             this.$refs.form.validate();
             await this.$nextTick();
             if (!this.valid) return;
-            console.log(this.form);
-            // TODO : 서버로 데이터 보내서 게시판 생성 하자
+            let data = false;
+            let msg = "";
+            if (this.table) {
+                data = await this.$axios.put(`/api/admin/board/${this.table}`, this.form);
+                msg = "수정";
+            } else {
+                data = await this.$axios.post('/api/admin/board', this.form);
+                msg = "생성";
+            }
+            if (data) {
+                this.$toast.info(`${this.form.brd_subject} 게시판을 ${msg}하였습니다.`);
+                this.$router.push('/adm/board/list');
+            }
         },
     }
 }
