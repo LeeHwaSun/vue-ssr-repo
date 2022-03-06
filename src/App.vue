@@ -63,18 +63,6 @@ export default {
       }
     }
   },
-  mounted() {
-    /*this.$socket.on('config:update', ( data ) => {
-      this.SET_CONFIG(data);
-    });
-    this.$socket.on('config:remove', ( key ) => {
-      this.SET_CONFIG({key, value : null});
-    });*/
-  },
-  destroyed() {
-    //this.$socket.off('config:update');
-    //this.$socket.off('config:remove');
-  },
   methods: {
     ...mapMutations(['SET_CONFIG']),
     ...mapMutations('socket', ['SET_ONLINE',]),

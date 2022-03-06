@@ -17,6 +17,8 @@ const store = new Vuex.Store({
   state: {
     appReady : false,
     config: {},
+    initFetchs : [],
+    initData: null,
   },
   mutations: {
     SET_APP_READY(state) {
@@ -31,6 +33,23 @@ const store = new Vuex.Store({
         state.config[key] = value;
       } else {
         Vue.set(state.config, key, value);
+      }
+    },
+    PUSH_FETCH(state, tag) {
+      state.initFetchs.push(tag);
+    },
+    SET_INITDATA(state, data) {
+      if (data == null) {
+        this.initFetchs = null;
+        this.initData = null;
+      } else {
+        const keys = Object.keys(data);
+        if (state.initData == null) {
+          state.initData = {};
+        }
+        for (const key of keys) {
+          state.initData[key] = data[key];
+        }
       }
     }
   },
