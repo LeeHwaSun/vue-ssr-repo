@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
+    "@ezvue/ez-tiptap-editor": "^0.1.3",
     "@mdi/font": "5.9.55",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
