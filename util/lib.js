@@ -30,6 +30,13 @@ const lib = {
             parent = parent.$parent;
         }
         return null;
+    },
+    getSummary(content, len = 300) {
+        let text = content.replace(/(<([^>]+)>)/ig, "");
+        if (text.length > len) {
+            text = text.substr(0, len - 3) + "...";
+        }
+        return text;
     }
 }
 

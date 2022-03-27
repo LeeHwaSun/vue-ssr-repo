@@ -38,7 +38,8 @@ const level = {
         }
     },
     isGrant(req, lv) {
-        return req.user && req.user.user_level >= lv ? true : false;
+        const compLv = req.user && req.user.user_level ? req.user.user_level : 0;
+        return compLv >= lv ? true : false;
     }
 }
 

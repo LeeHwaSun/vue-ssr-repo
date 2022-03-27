@@ -198,6 +198,9 @@ export default {
                 }
             }
 
+            // 에디터에서 업로드한 이미지
+            formData.append('upImages', JSON.stringify(this.upImages));
+
             let wr_id;
             if (this.id) {
                 wr_id = await this.update(formData);
@@ -208,12 +211,18 @@ export default {
             // 글 작성이 잘 끝났으면
             if (wr_id) {
                 this.isWrite = true;
+                this.$router.push(`/board/${this.table}/${wr_id}`);
             }
 
             this.loading = false;
         },
-        async insert(formData) {},
-        async update(formData) {},
+        async insert(formData) {
+            const data = await this.$axios.post(`/api/board/write/${this.table}`, formData);
+            return data.wr_id;
+        },
+        async update(formData) {
+
+        },
     }
 }
 </script>

@@ -3,7 +3,7 @@
         :is="curSkin"
         :config="config"
         :access="access"
-        :wr_id="wr_id"
+        :id="wr_id"
     />
 </template>
 
