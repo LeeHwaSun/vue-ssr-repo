@@ -16,6 +16,7 @@
                 v-model="form.wr_category"
                 :items="config.brd_category"
                 :rules="[rules.required({ label: '카테고리' })]"
+                :readonly="!!parentItem"
             ></v-select>
             <template v-if="!user">
                 <v-text-field
@@ -40,6 +41,17 @@
                     :rules="[rules.matchValue(form.wr_password)]"
                 />
             </template>
+
+            <v-expansion-panels v-if="parentItem">
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        원글 : {{ parentItem.wr_title }}
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <ez-tiptap v-model="parentItem.wr_content" :editable="false" />
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
 
             <v-text-field
                 label="제목"
@@ -78,7 +90,15 @@
                     :label="fileTitle(i)"
                     v-model="uploadFiles[i - 1]"
                     show-size
+                    :disabled="form.wrFile && form.wrFiles[i - 1] ? !form.wrFiles[i - 1].remove : false"
                 />
+                <div v-if="form.wrFiles && form.wrFiles[i - 1]">
+                    <v-checkbox 
+                        v-model="form.wrFiles[i - 1].remove"
+                        label="삭제"
+                        @change="uploadFiles[i - 1] = null"
+                    />
+                </div>
             </div>
         </v-form>
     </v-container>
@@ -110,6 +130,7 @@ export default {
             loading : false,
             upImages : [],
             isWrite : false, // 작성을 했는지 여부
+            parentItem : null, // 부모글
         };
     },
     computed : {
@@ -119,9 +140,26 @@ export default {
         table() {
             return this.config.brd_table;
         },
+        pid() {
+            if (this.$route.query.act == 'reply') {
+                return this.id;
+            } else {
+                return 0;
+            }
+        },
         pageTitle() {
+            let title = '';
+            if (this.pid) {
+                title = ' 게시물 답글 작성';
+            } else {
+                if (this.id) {
+                    title = ' 게시물 수정';
+                } else {
+                    title = ' 게시물 작성';
+                }
+            }
             return (
-                this.config.brd_subject + (this.id ? " 게시물 수정" : " 게시물 작성")
+                this.config.brd_subject + title
             );
         },
         rules : () => validateRules,
@@ -138,15 +176,22 @@ export default {
     methods : {
         async init() {
             if (this.id) {
-
-            } else {
+                const data = await this.$axios.get(`/api/board/detail/${this.table}/${this.id}`);
+                if (this.pid) { // 부모글의 답글
+                    this.initForm();
+                    this.form.wr_category = data.wr_category;
+                    this.parentItem = data;
+                } else { // 수정
+                    this.form = data;
+                }
+            } else { // 새글
                 this.initForm();
             }
         },
         initForm() {
             const form = {
                 wr_reply : 0,
-                wr_parent : 0, // TODO : 나중에 답글 작성할 때 부모글 아이들 넣음
+                wr_parent : this.pid, // TODO : 나중에 답글 작성할 때 부모글 아이들 넣음
                 user_id : this.user ? this.user.user_id : 0, // 0이면 비회원 글 작성임
                 wr_email : this.user ? this.user.user_email : "",
                 wr_name : this.user ? this.user.user_name : "",
@@ -155,6 +200,8 @@ export default {
                 wr_title : "",
                 wr_content : "",
                 wrTags : [],
+                //wrImgs : [],
+                //wrFiles : [],
             };
             for (let i = 1; i <= 10; i++) {
                 form[`wr_${i}`] = "";
@@ -163,7 +210,13 @@ export default {
         },
         fileTitle(i) {
             // TODO : 수정 할 때 올렸던 파일 이름 요기서 사용할꺼에요
-            return `첨부파일 ${i}`;
+            if (this.form.wrFiles) {
+                const wrFile = this.form.wrFiles[i - 1];
+                return wrFile && !wrFile.remove ? wrFile.brd_file_name : `첨부파일 ${i}`;
+            } else {
+                return `첨부파일 ${i}`;   
+            }
+            
         },
         async uploadImage({ file, desc, callback }) {
             const formData = new FormData();
@@ -202,7 +255,7 @@ export default {
             formData.append('upImages', JSON.stringify(this.upImages));
 
             let wr_id;
-            if (this.id) {
+            if (this.id && !this.pid) {
                 wr_id = await this.update(formData);
             } else {
                 wr_id = await this.insert(formData);
@@ -221,7 +274,8 @@ export default {
             return data.wr_id;
         },
         async update(formData) {
-
+            const data = await this.$axios.put(`/api/board/write/${this.table}/${this.id}`, formData);
+            return data.wr_id;
         },
     }
 }

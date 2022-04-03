@@ -1,7 +1,20 @@
 const router = require('express').Router();
-const { isGrant } = require('../../util/level');
+const { isGrant, LV } = require('../../util/level');
 const { modelCall, getIp } = require('../../util/lib');
 const boardModel = require('./_model/boardModel');
+
+async function isModify(config, user, wrItem) {
+    let msg = '수정 권한이 없습니다.';
+    if (user) { // 회원
+        if (user.user_level >= LV.SUPER || user.user_id == wrItem.user_id) {
+            msg = '';
+        }
+    } else { // 비회원
+        // 세션에 비밀번호
+        // TODO : 비밀번호가 맞는지 확인
+    }
+    return msg;
+}
 
 // 게시판 설정 불러오기
 router.get('/config/:brd_table', async (req, res) => {
@@ -46,6 +59,25 @@ router.post('/write/:brd_table', async (req, res) => {
     res.json(result);
 });
 
+// 게시물 수정
+router.put('/write/:brd_table/:wr_id', async (req, res) => {
+    const data = req.body;
+    const { brd_table, wr_id } = req.params;
+    data.wr_ip = getIp(req);
+
+    // 게시물 수정 권한 확인
+    const config = await modelCall(boardModel.getConfig, brd_table);
+    const modifyMsg = await isModify(config, req.user, data);
+
+    if (modifyMsg) { // 에러메시지가 있으면 에러
+        return res.json({ err : modifyMsg });
+    }
+
+    const result = await modelCall(boardModel.writeUpdate, brd_table, wr_id, data, req.files);
+    res.json(result);
+    
+})
+
 // 게시물 목록 조회
 router.get('/list/:brd_table', async (req, res) => {
     const { brd_table } = req.params;
@@ -73,6 +105,6 @@ router.get('/detail/:brd_table/:wr_id', async (req, res) => {
 
     const result = await modelCall(boardModel.getDetail, brd_table, wr_id, req.user);
     res.json(result);
-})
+});
 
 module.exports = router;

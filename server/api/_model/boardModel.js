@@ -94,14 +94,20 @@ const boardModel = {
         const table = `${TABLE.WRITE}${brd_table}`;
 
         // 게시판 글에 대한 그룹, 정렬, 깊이
-        if (data.wr_parent === 0) { // 새글
+        if (data.wr_parent == 0) { // 새글
             const grpQuery = `SELECT MAX(wr_grp) AS wr_grp FROM ${table}`;
             const [[{ wr_grp }]] = await db.execute(grpQuery);
             data.wr_grp = wr_grp ? wr_grp + 1 : 1;
             data.wr_order = 0;
-            data.wr_grp = 0;
+            data.wr_dep = 0;
         } else { // 답글
-
+            const grpQuery = `SELECT wr_grp, wr_order, wr_dep from ${table} WHERE wr_id = ${data.wr_parent}`;
+            const [[ parent ]] = await db.execute(grpQuery);
+            data.wr_grp = parent.wr_grp;
+            data.wr_order = parent.wr_order + 1;
+            data.wr_dep = parent.wr_dep + 1;
+            const uSql = `UPDATE ${table} SET wr_order = wr_order + 1 WHERE wr_reply = ${data.wr_reply} AND wr_grp = ${parent.wr_grp} AND wr_order >= ${data.wr_order}`;
+            await db.execute(uSql);
         }
 
         // 게시판 작성일, 수정일
@@ -136,6 +142,55 @@ const boardModel = {
 
         return { wr_id };
     },
+    async writeUpdate(brd_table, wr_id, data, files) {
+        const table = `${TABLE.WRITE}${brd_table}`;
+        delete data.wr_id;
+
+        // 기존 첨부파일
+        const wrFiles = JSON.parse(data.wrFiles);
+        delete data.wrFiles;
+
+        // 기존 첨부파일에서 삭제가 참인거
+        for (const wrFile of wrFiles) {
+            if (wrFile.remove) {
+                await boardModel.removeFile(brd_table, wrFile);
+            }
+        }
+
+        // 새로운 첨부파일 등록
+        if (files) {
+            const keys = Object.keys(files);
+            for (const key of keys) {
+                const file = files[key];
+                await boardModel.uploadFile(brd_table, "", file, wr_id);
+            }
+        }
+
+        // 에디터에서 이미지 삽입
+        const upImages = JSON.parse(data.upImages).concat(JSON.parse(data.wrImgs));
+        delete data.upImages;
+        delete data.wrImgs;
+        await boardModel.clearImages(brd_table, wr_id, data.wr_content, upImages);
+        
+        // 데이터 정리
+        delete data.wr_create_at; // 생성일 삭제
+        delete data.wr_password; // 비밀번호 삭제
+        data.wr_update_at = moment().format('LT'); // 수정일 현재로 변경
+        data.wr_summary = getSummary(data.wr_content, 250);
+        delete data.good;
+        delete data.bad;
+        delete data.replys;
+        delete data.goodFlag;
+
+        // 태그
+        const wrTags = JSON.parse(data.wrTags);
+        delete data.wrTags;
+        await tagModel.registerTags(brd_table, wr_id, wrTags);
+
+        const sql = sqlHelper.Update(table, data, { wr_id });
+        const [rows] = await db.execute(sql.query, sql.values);
+        return { wr_id };
+    },
     async clearImages(brd_table, wr_id, wr_content, upImages) {
         for (const img of upImages) {
             if (wr_content.indexOf(img.brd_file_src) > -1) { // 게시물에 이미지가 있으면
@@ -148,6 +203,13 @@ const boardModel = {
     },
     async getList(brd_table, config, options, user) {
         const table = `${TABLE.VIEW}${brd_table}`;
+
+        options.sortBy = [];
+        options.sortDesc = [];
+        for (const sort of config.brd_sort) {
+            options.sortBy.push(sort.by);
+            options.sortDesc.push(sort.desc == 1);
+        }
 
         const sql = sqlHelper.SelectLimit(table, options);
         const [[{ totalItems }]] = await db.execute(sql.countQuery, sql.values);

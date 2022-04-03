@@ -108,10 +108,10 @@ module.exports = (app) => {
                 return done('네이버 로그인 실패', null);
             }
         }
-    ))
+    ));
 
     app.use(async (req, res, next) => {
-        const token = req.cookies.token;
+        const token = req.cookies.token || req.headers.token;
         if (!token) return next();
         const { user_id } = jwt.verify(token);
         if (!user_id) return next();
