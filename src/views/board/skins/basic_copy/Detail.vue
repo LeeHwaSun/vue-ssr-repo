@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 import { LV } from '../../../../../util/level';
 import SsrRenderer from '../../../../components/util/SsrRenderer.vue';
 export default {
@@ -62,13 +62,13 @@ export default {
     },
     data() {
         return {
-            
+            item : null,
         }
     },
     computed : {
         ...mapState({
             user : state => state.user.user,
-            item : state => state.board.detail,
+            initData : state => state.initData,
         }),
         ...mapGetters('user', ['GRANT']),
         table() {
@@ -87,29 +87,38 @@ export default {
             return "";
         }
     },
-    watch : {
-        id() {
-            this.fetchData();
-        }
-    },
-    serverPrefetch() {
-        return this.fetchData();
-    },
     mounted() {
-        if (!this.item) {
-            this.fetchData();
+        this.fetchData();
+    },
+    syncData() {
+        if (this.initData && this.initData.detail) {
+            return this.setData(this.initData.detail);
+        } else {
+            return this.fetchData();
         }
     },
     methods : {
-        ...mapActions('board', ['getBoardDetail']),
+        ...mapMutations(['SET_INITDATA']),
         async fetchData() {
             const headers = {};
             if (this.$ssrContext) {
                 headers.token = this.$ssrContext.token;
             }
 
-            await this.getBoardDetail({ table : this.table, id : this.id, headers });
+            const data = await this.$axios.get(
+                `/api/board/detail/${this.table}/${this.id}`, 
+                { headers }
+            );
+
+            if (this.$ssrContext) {
+                this.SET_INITDATA({ detail : data });
+            }
+            
+            this.setData(data);
         },
+        setData(data) {
+            this.item = data;
+        }
     }
 }
 </script>

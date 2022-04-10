@@ -4,7 +4,7 @@
             <v-toolbar-title>회원관리</v-toolbar-title>
             <search-field :items="searchItems" :options.sync="options" />
             <v-spacer></v-spacer>
-            <v-sheet width="60" class="mt-2">
+            <v-sheet width="60" class="mt-2" color="transparent">
                 <v-select 
                     :items="pageItems"
                     v-model="options.itemsPerPage"
@@ -13,7 +13,7 @@
                     dense
                 />
             </v-sheet>
-            <v-sheet width="100" class="mt-2 ml-4">
+            <v-sheet width="100" class="mt-2 ml-4" color="transparent">
                 <v-select
                     :items="typeItems"
                     v-model="options.type"

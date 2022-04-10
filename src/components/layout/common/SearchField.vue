@@ -131,8 +131,16 @@ export default {
             this.$refs.form.validate();
             await this.$nextTick();
             if (!this.valid) return;
-            const options = { ...this.options, page : 1, stf : [this.form.stf], stc : [this.form.stc], stx : [this.form.stx] };
-            console.log(options);
+            const options = { 
+                ...this.options, 
+                page : 1, 
+                /*stf : [this.form.stf], 
+                stc : [this.form.stc], 
+                stx : [this.form.stx] */
+            };
+            options.stf.splice(0, 1, this.form.stf);
+            options.stc.splice(0, 1, this.form.stc);
+            options.stx.splice(0, 1, this.form.stx);
             this.$emit("update:options", options);
             this.$refs.dialog.close();
         },
@@ -140,10 +148,13 @@ export default {
             const options = {
                 ...this.options,
                 page: 1,
-                stf : [""],
+                /*stf : [""],
                 stc : [""],
-                stx : [""]
+                stx : [""]*/
             };
+            options.stf.splice(0, 1, "");
+            options.stc.splice(0, 1, "");
+            options.stx.splice(0, 1, "");
             this.$emit("update:options", options);
             this.$refs.dialog.close();
         }

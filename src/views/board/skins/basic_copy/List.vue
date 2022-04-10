@@ -1,21 +1,8 @@
 <template>
-    <v-container fluid>
+    <v-container>
         <v-toolbar>
             <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
-            <v-sheet v-if="config.brd_use_category == 1" width="150" class="ml-4" color="transparent">
-                <category-select :options.sync="options" />
-            </v-sheet>
-            <search-field :items="searchItems" :options.sync="options" class="ml-4"/>
             <v-spacer />
-            <v-sheet width="60" class="mt-2 mr-2" color="transparent">
-                <v-select 
-                    :items="pageItems"
-                    v-model="options.itemsPerPage"
-                    label="목록 수"
-                    hide-details
-                    dense
-                />
-            </v-sheet>
             <v-btn :to="`/board/${table}?act=write`" color="primary">
                 <v-icon left>mdi-pencil</v-icon>
                 새글 작성
@@ -27,7 +14,6 @@
             :options.sync="options"
             :server-items-length="totalItems"
             :loading="loading"
-            hide-default-footer
         >
             <template v-slot:item.wr_title="{ item }">
                 <v-btn 
@@ -46,23 +32,17 @@
                 </v-btn>
             </template>
         </v-data-table>
-        <v-pagination
-            v-model="options.page"
-            :length="pageCount"
-            class="mt-4"
-        />
+
     </v-container>
 </template>
 
 <script>
 import qs from 'qs';
-import { mapActions, mapState } from 'vuex';
 import { deepCopy } from '../../../../../util/lib';
 import DisplayTime from '../../../../components/layout/user/DisplayTime.vue';
-import SearchField from '../../../../components/layout/common/SearchField.vue';
-import CategorySelect from './component/CategorySelect.vue';
+import { mapMutations, mapState } from 'vuex';
 export default {
-    components : { DisplayTime, SearchField, CategorySelect },
+    components : { DisplayTime, },
     name : "BasicList",
     props : {
         config : Object,
@@ -74,25 +54,23 @@ export default {
     data() {
         return {
             loading : false,
-            options : {},
-            pageReady : false,
-            pageRouting : false,
-            pageItems : [2, 5, 10, 20, 50, 100],
+            items : [],
+            totalItems : 0,
+            options : {
+                itemsPerPage : 10,
+                page : 1,
+                sortBy : [],
+                sortDesc : [],
+                stf : [""],
+                stc : [""],
+                stx : [""],
+            }
         }
     },
     computed : {
         ...mapState({
-            items : state => state.board.list,
-            totalItems : state => state.board.totalItems,
+            initData : state => state.initData,
         }),
-        searchItems() {
-            const arr = this.headers.filter((item) => item.searchable);
-            arr.push({
-                text : "내용",
-                value : "wr_content"
-            });
-            return arr;
-        },
         table() {
             return this.config.brd_table;
         },
@@ -127,14 +105,14 @@ export default {
                     value : "wr_create_at", 
                     align : "center", 
                     sortable : false, 
-                    searchable : false, 
+                    searchable : true, 
                 },
                 {
                     text : "조회수", 
                     value : "wr_view", 
                     align : "center", 
                     sortable : false, 
-                    searchable : false, 
+                    searchable : true, 
                 }
             ];
             if (this.config.brd_use_category) {
@@ -143,13 +121,10 @@ export default {
                     value : "wr_category", 
                     align : "start", 
                     sortable : false, 
-                    searchable : false, 
+                    searchable : true, 
                 });
             }
             return headers;
-        },
-        pageCount() {
-            return Math.ceil(this.totalItems / this.options.itemsPerPage);
         }
     },
     watch : {
@@ -158,56 +133,24 @@ export default {
                 this.fetchData();
             },
             deep : true,
-        },
-        table() {
-            this.fetchData();
         }
     },
-    serverPrefetch() {
-        return this.fetchData();
-    },
-    created() {
-        this.options = this.initOptions();
-    },
-    mounted() {
-        window.addEventListener('popstate', this.routeChange);
-    },
-    destroyed() {
-        window.removeEventListener('popstate', this.routeChange);
+    syncData() {
+        if (this.initData && this.initData.list) {
+            return this.setData(this.initData.list);
+        } else {
+            return this.fetchData();
+        }
     },
     methods : {
-        ...mapActions('board', ['getBoardList']),
-        initOptions() {
-            const { query } = this.$route;
-            const options = {
-                page : Number(query.page) || 1,
-                itemsPerPage : Number(query.itemsPerPage) || 10,
-                stf : [query.stf || "", "wr_category"],
-                stx : [query.stx || "", ""],
-                stc : [query.stc || "", "eq"],
-            }
-            return options;
-        },
-        pushState() {
-            if (!this.pageRouting) {
-                const opt = {
-                    page : this.options.page,
-                    itemsPerPage : this.options.itemPerPage,
-                    stf : this.options.stf[0] || undefined,
-                    stx : this.options.stx[0] || undefined,
-                    stc : this.options.stc[0] || undefined,
-                    ca : this.options.stf[1] || undefined,
-                };
-                const query = qs.stringify(opt);
-                if (this.pageReady) {
-                    history.pushState(null, null, `${this.$route.path}?${query}`);
-                } else {
-                    history.replaceState(null, null, `${this.$route.path}?${query}`);
-                }
-            }
-        },
+        ...mapMutations(['SET_INITDATA']),
         getPayload() {
             const payload = deepCopy(this.options);
+            // 정렬을 설정값에 있는 정렬로 하자
+            /*for (const sort of this.config.brd_sort) {
+                payload.sortBy.push(sort.by);
+                payload.sortDesc.push(sort.desc == 1);
+            }*/
             // 본글인 목록 검색
             payload.stf.push("wr_reply");
             payload.stc.push("eq");
@@ -217,10 +160,6 @@ export default {
 
             return payload;
         },
-        routeChange() {
-            this.pageRouting = true;
-            this.options = this.initOptions();  
-        },
         async fetchData() {
             const payload = this.getPayload();
             const query = qs.stringify(payload);
@@ -229,7 +168,18 @@ export default {
                 headers.token = this.$ssrContext.token;
             }
 
-            await this.getBoardList({ vm : this, query, headers });
+            const data = await this.$axios.get(
+                `/api/board/list/${this.table}?${query}`,
+                { headers }
+            );
+            if (this.$ssrContext) {
+                this.SET_INITDATA({ list : data });
+            }
+            this.setData(data);
+        },
+        setData(data) {
+            this.items = data.items;
+            this.totalItems = data.totalItems;
         }
     }
 }
