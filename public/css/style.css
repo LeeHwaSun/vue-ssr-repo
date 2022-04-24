@@ -21,3 +21,17 @@
 .menu-drag-container .ghost { cursor: grab; }
 .menu-drag-container .menu-drag-zone { padding-bottom : 1rem; }
 /* // Drag Menu CSS */
+
+/* Board List Interactive CSS */
+@media screen and (min-width : 600px) {
+    .fixedTable table { table-layout: fixed; }
+    .basic-title { width: 100%; }
+    .basic-title > span { display: block; width: 100%; }
+}
+@media screen and (max-width : 600px) {
+    .fixedTable > div { overflow: hidden }
+    .fixedTable .v-data-table__mobile-table-row { max-width: calc(100vw - 24px) }
+    .fixedTable .v-data-table__mobile-row__header { width: 80px }
+    .fixedTable .v-data-table__mobile-row__cell .basic-title > span > div { display: block; max-width: calc(100vw - 120px); }
+}
+/* // Board List Interactive CSS */

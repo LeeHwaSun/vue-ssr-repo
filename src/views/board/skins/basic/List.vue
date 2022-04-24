@@ -28,22 +28,52 @@
             :server-items-length="totalItems"
             :loading="loading"
             hide-default-footer
+            class="fixedTable"
         >
+            <template v-slot:item.no="{ index }">
+                {{ getNo(index) }}
+            </template>
             <template v-slot:item.wr_title="{ item }">
                 <v-btn 
                     :to="`/board/${table}/${item.wr_id}`" 
                     block 
                     plain 
-                    class="justify-start pl-0"
+                    class="justify-start px-0 text-none basic-title"
                 >
-                    <v-icon 
-                        v-if="item.wr_dep > 0"
-                        :style="{'padding-left' : `${(item.wr_dep - 1) * 16}px`}"
-                    >
-                        mdi-subdirectory-arrow-right
-                    </v-icon>
-                    <div>{{ item.wr_title }}</div>
+                    <div class="d-flex justify-start align-center">
+                        <v-icon 
+                            v-if="item.wr_dep > 0"
+                            :style="{ 'padding-left' : `${(item.wr_dep - 1) * 16}px` }"
+                        >
+                            mdi-subdirectory-arrow-right
+                        </v-icon>
+                        <div class="text-truncate" :style="{
+                            'max-width' : `calc(100% - 20px - ${
+                                item.wr_dep > 0 ? (item.wr_dep - 1) * 16 + 24 : 0
+                            }px)`,
+                        }">
+                            {{ item.wr_title }}
+                        </div>
+                        <v-tooltip top>
+                            <template v-slot:activator="{on, attrs}">
+                                <v-chip 
+                                    v-on="on" 
+                                    v-bind="attrs"
+                                    x-small
+                                    label
+                                    color="green"
+                                    class="px-1 ml-1" 
+                                >
+                                    {{ item.replys }}
+                                </v-chip>
+                            </template>
+                            <span>댓글수 : {{ item.replys }}</span>
+                        </v-tooltip>
+                    </div>
                 </v-btn>
+            </template>
+            <template v-slot:item.wr_create_at="{ item }">
+                <display-time :time="item.wr_create_at"/>
             </template>
         </v-data-table>
         <v-pagination
@@ -58,11 +88,11 @@
 import qs from 'qs';
 import { mapActions, mapState } from 'vuex';
 import { deepCopy } from '../../../../../util/lib';
-import DisplayTime from '../../../../components/layout/user/DisplayTime.vue';
 import SearchField from '../../../../components/layout/common/SearchField.vue';
 import CategorySelect from './component/CategorySelect.vue';
+import DisplayTime from './component/DisplayTime.vue';
 export default {
-    components : { DisplayTime, SearchField, CategorySelect },
+    components : { SearchField, CategorySelect, DisplayTime },
     name : "BasicList",
     props : {
         config : Object,
@@ -104,9 +134,10 @@ export default {
                 { 
                     text : "No", 
                     value : "no", 
-                    align : "start", 
+                    align : "center", 
                     sortable : false, 
                     searchable : false,
+                    width : "90"
                 },
                 {
                     text : "제목", 
@@ -120,14 +151,16 @@ export default {
                     value : "wr_name", 
                     align : "center", 
                     sortable : false, 
-                    searchable : true, 
+                    searchable : true,
+                    width : "100"
                 },
                 {
                     text : "작성일", 
                     value : "wr_create_at", 
                     align : "center", 
                     sortable : false, 
-                    searchable : false, 
+                    searchable : false,
+                    width : "150" 
                 },
                 {
                     text : "조회수", 
@@ -135,15 +168,17 @@ export default {
                     align : "center", 
                     sortable : false, 
                     searchable : false, 
+                    width : "80"
                 }
             ];
             if (this.config.brd_use_category) {
                 headers.splice(1, 0, {
                     text : "카테고리", 
                     value : "wr_category", 
-                    align : "start", 
+                    align : "center", 
                     sortable : false, 
                     searchable : false, 
+                    width : "120"
                 });
             }
             return headers;
@@ -230,6 +265,11 @@ export default {
             }
 
             await this.getBoardList({ vm : this, query, headers });
+        },
+        getNo(index) {
+            const { page, itemsPerPage } = this.options;
+            const { totalItems } = this;
+            return totalItems - ( (page - 1) * itemsPerPage ) - index;
         }
     }
 }

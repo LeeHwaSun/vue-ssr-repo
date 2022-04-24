@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-toolbar>
             <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
             <v-spacer />

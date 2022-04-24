@@ -1,59 +1,120 @@
 <template>
-    <v-card flat v-if="item">
-        <v-card-title>
-            <v-toolbar flat>
-                <v-toolbar-title>{{item.wr_title}}</v-toolbar-title>
-                <v-spacer />
-                {{item.wr_name}}
-                <v-btn :to="`/board/${table}`">목록</v-btn>
-            </v-toolbar>
-        </v-card-title>
-        <v-card-text>
-
-            <ssr-renderer>
-                <template>
-                    <ez-tiptap :editable="false" v-model="item.wr_content" />
-                </template>
-                <template v-slot:server>
-                    <div v-html="item.wr_content">
-                    </div>
-                </template>
-            </ssr-renderer>
-            
-        </v-card-text>
-        <v-card-actions class="justify-center">
-            <v-btn 
-                v-if="isModify == 'MODIFY'" 
-                color="info" 
-                :to="`/board/${table}/${item.wr_id}?act=write`"
-            >
-                <v-icon left>mdi-pencil</v-icon>
-                수정
-            </v-btn>
-            <v-btn
-                v-if="access.reply"
-                color="secondary"
-                :to="`/board/${table}/${item.wr_id}?act=reply`"
-            >
-                <v-icon>mdi-subdirectory-arrow-right</v-icon>
-                답글쓰기
-            </v-btn>
-        </v-card-actions>
-    </v-card>
-    <!--div>
-        Basic Detail
-        <v-btn :to="`/board/${table}`">목록</v-btn>
-        <v-btn :to="`/board/${table}?act=write`">쓰기</v-btn>
-        <v-btn :to="`/board/${table}/1`">읽기</v-btn>
-    </div-->
+    <v-container fluid>
+        <v-card flat v-if="item">
+            <v-card-title>
+                <v-toolbar flat>
+                    <v-toolbar-title>{{ item.wr_title }}</v-toolbar-title>
+                    <v-spacer />
+                    <v-subheader class="text-no-wrap">
+                        <v-icon class="mx-2" small>mdi-account</v-icon>
+                        {{ item.wr_name }}
+                        <v-icon class="mx-2" small>mdi-clock-outline</v-icon>
+                        <i><display-time :time="item.wr_create_at" /></i>
+                        <v-icon class="mx-2" small>mdi-eye</v-icon>
+                        {{ item.wr_view }}
+                    </v-subheader>
+                </v-toolbar>
+            </v-card-title>
+            <v-card-text>
+                <ssr-renderer>
+                    <template>
+                        <ez-tiptap :editable="false" v-model="item.wr_content" />
+                    </template>
+                    <template v-slot:server>
+                        <div v-html="item.wr_content">
+                        </div>
+                    </template>
+                </ssr-renderer>
+            </v-card-text>
+            <v-card-text>
+                <!-- 태그 목록 -->
+                <tag-view :tags="item.wrTags" />
+            </v-card-text>
+            <v-card-text>
+                <display-good 
+                    :table="table" 
+                    :item="item" 
+                    class="d-flex justify-center"
+                    :icon="{ good : 'mdi-thumb-up', bad : 'mdi-thumb-down' }"
+                    :label="{ good : 'LIKE', bad : 'UNLIKE' }"
+                />
+            </v-card-text>
+            <v-card-text>
+                <file-download :table="table" :item="item" :access="access" />
+            </v-card-text>
+            <v-card-actions>
+                <v-col cols="4" class="text-no-wrap">
+                    <!-- 수정 -->
+                    <board-button 
+                        v-if="isModify == 'MODIFY'" 
+                        color="info" 
+                        :to="`/board/${table}/${item.wr_id}?act=write`"
+                        label="수정"
+                        icon="mdi-pencil"
+                    />
+                    <!-- TODO : 비회원 게시물 수정 버튼 -->
+                    <!-- // 수정 -->
+                    <!-- 삭제 -->
+                    <board-button
+                        v-if="isModify == 'MODIFY'"
+                        color="error"
+                        class="ml-2"
+                        @click="deleteItem"
+                        label="삭제"
+                        icon="mdi-delete"
+                        :loading="deleteLoading"
+                    />
+                    <!-- TODO : 비회원 게시물 삭제 버튼 -->
+                    <!-- // 삭제 -->
+                </v-col>
+                <v-col cols="4" class="text-center text-no-wrap">
+                    <board-button 
+                        :to="`/board/${table}`" 
+                        color="accent" 
+                        label="목록" 
+                        icon="mdi-menu" 
+                    />
+                </v-col>
+                <v-col cols="4" class="text-right text-no-wrap">
+                    <board-button
+                        v-if="access.reply"
+                        color="secondary"
+                        :to="`/board/${table}/${item.wr_id}?act=reply`"
+                        label="답글쓰기"
+                        icon="mdi-subdirectory-arrow-right"
+                    />
+                    <board-button
+                        v-if="access.write"
+                        color="primary"
+                        class="ml-2"
+                        :to="`/board/${table}?act=write`"
+                        label="글쓰기"
+                        icon="mdi-pencil"
+                    />
+                </v-col>
+            </v-card-actions>
+        </v-card>
+    </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 import { LV } from '../../../../../util/level';
 import SsrRenderer from '../../../../components/util/SsrRenderer.vue';
+import DisplayTime from './component/DisplayTime.vue';
+import TagView from './component/TagView.vue';
+import FileDownload from './component/FileDownload.vue';
+import BoardButton from './component/BoardButton.vue';
+import DisplayGood from './component/DisplayGood.vue';
 export default {
-  components: { SsrRenderer },
+  components: { 
+      SsrRenderer, 
+      DisplayTime, 
+      TagView, 
+      FileDownload, 
+      BoardButton, 
+      DisplayGood 
+    },
     name : "BasicDetail",
     props : {
         config : Object,
@@ -62,7 +123,7 @@ export default {
     },
     data() {
         return {
-            
+            deleteLoading : false,
         }
     },
     computed : {
@@ -99,8 +160,13 @@ export default {
         if (!this.item) {
             this.fetchData();
         }
+        console.log(this.$vuetify);
+    },
+    destroyed() {
+        this.SET_DETAIL(null);
     },
     methods : {
+        ...mapMutations('board', ['SET_DETAIL']),
         ...mapActions('board', ['getBoardDetail']),
         async fetchData() {
             const headers = {};
@@ -110,6 +176,18 @@ export default {
 
             await this.getBoardDetail({ table : this.table, id : this.id, headers });
         },
+        async deleteItem(token) {
+            this.deleteLoading = true;
+            const confirm = await this.$myNotify.confirm(
+                '게시물을 삭제하시겠습니까?', 
+                '게시물 삭제', 
+                { icon : 'mdi-alert' }
+            );
+            if (confirm) {
+                const data = await this.$axios.delete(`/api/board/${this.table}/${this.item.wr_id}?token=${token}`);
+            }
+            this.deleteLoading = false;
+        }
     }
 }
 </script>

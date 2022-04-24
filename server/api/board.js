@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { isGrant, LV } = require('../../util/level');
 const { modelCall, getIp } = require('../../util/lib');
 const boardModel = require('./_model/boardModel');
+const fs = require('fs');
 
 async function isModify(config, user, wrItem) {
     let msg = '수정 권한이 없습니다.';
@@ -105,6 +106,31 @@ router.get('/detail/:brd_table/:wr_id', async (req, res) => {
 
     const result = await modelCall(boardModel.getDetail, brd_table, wr_id, req.user);
     res.json(result);
+});
+
+// 파일 다운로드
+router.get('/download/:brd_table/:brd_file_name', async (req, res) => {
+    const { brd_table, brd_file_name } = req.params;
+    // 게시물 파일 다운로드 권한
+    const config = await modelCall(boardModel.getConfig, brd_table);
+    const grant = isGrant(req, config.brd_download_level);
+    if (!grant) {
+        return res.status(403).end('NO FILE DOWNLOAD PERMISSION');
+    }
+    const { src } = req.query;
+
+    const srcFile = `${UPLOAD_PATH}/${brd_table}/${src}`;
+    if (!fs.existsSync(srcFile)) {
+        return res.status(404).end('FILE NOT FOUND');
+    }
+    res.download(srcFile, brd_file_name);
+});
+
+// 게시글 삭제
+router.delete('/:brd_table/:wr_id', async (req, res) => {
+    const { brd_table, wr_id } = req.params;
+    const { token } = req.query;
+    res.json({ brd_table, wr_id, token});
 });
 
 module.exports = router;

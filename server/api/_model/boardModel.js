@@ -6,12 +6,8 @@ const sqlHelper = require('../../../util/sqlHelper');
 const moment = require('../../../util/moment');
 const jwt = require('../../plugins/jwt');
 const tagModel = require('./tagModel');
+const goodModel = require('./goodModel');
 const { getSummary } = require('../../../util/lib');
-
-function clearDataField(data) {
-    data.wr_create_at = moment(data.wr_create_at).format('LT');
-    return data;
-}
 
 const boardModel = {
     async getConfig(brd_table) {
@@ -214,9 +210,6 @@ const boardModel = {
         const sql = sqlHelper.SelectLimit(table, options);
         const [[{ totalItems }]] = await db.execute(sql.countQuery, sql.values);
         const [ items ] = await db.execute(sql.query, sql.values);
-        items.forEach(item => {
-            clearDataField(item);
-        })
         return { items, totalItems };
     },
     async getDetail(brd_table, wr_id, user) {
@@ -233,7 +226,12 @@ const boardModel = {
         item.wrFiles = files.wrFiles;
         // 게시물 태그 조회
         item.wrTags = await tagModel.getTags(brd_table, wr_id);
-        // TODO : 좋아요
+        // 게시물 좋아요 조회
+        if (user) {
+            item.goodFlag = await goodModel.getFlag(brd_table, wr_id, user.user_id);
+        } else {
+            item.goodFlag = 0;
+        }
         
         delete item.wr_password;
         return item;

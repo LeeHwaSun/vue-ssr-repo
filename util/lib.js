@@ -37,6 +37,11 @@ const lib = {
             text = text.substr(0, len - 3) + "...";
         }
         return text;
+    },
+    fileSize(x) {
+        const s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+        const e = Math.floor(Math.log(x) / Math.log(1024));
+        return (x / Math.pow(1024, e)).toFixed(2) + " " + s[e];
     }
 }
 
