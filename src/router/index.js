@@ -52,9 +52,12 @@ export function createRouter() {
       if ( $toast ) $toast.error(msg);
       if ( $Progress ) $Progress.fail();
       if ( from.name ) { // 이전 경로가 있으면 라우팅 동작 안함
-        next(false);
+        return isUser ? next('/') : next(false);
       } else { // 이전 경로가 없으면 홈 또는 로그인 페이지로 이동
-        next('/');
+        return isUser ? next('/') : next({
+          name : 'NoAuthLogin',
+          query : { nextUrl : to.fullPath }
+        });
       }
     } else {
       // 통과

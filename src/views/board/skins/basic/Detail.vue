@@ -53,6 +53,17 @@
                         icon="mdi-pencil"
                     />
                     <!-- TODO : 비회원 게시물 수정 버튼 -->
+                    <modify-button 
+                        v-if="isModify == 'NO_MEMBER'" 
+                        color="info"
+                        :table="table"
+                        :wr_id="item.wr_id"
+                        label="수정"
+                        @onValid="modifyItem"
+                    >
+                        <v-icon left>mdi-pencil</v-icon>
+                        수정
+                    </modify-button>
                     <!-- // 수정 -->
                     <!-- 삭제 -->
                     <board-button
@@ -93,6 +104,7 @@
                     />
                 </v-col>
             </v-card-actions>
+            <comment-list :id="item.wr_id" :table="table" :access="access" />
         </v-card>
     </v-container>
 </template>
@@ -106,6 +118,8 @@ import TagView from './component/TagView.vue';
 import FileDownload from './component/FileDownload.vue';
 import BoardButton from './component/BoardButton.vue';
 import DisplayGood from './component/DisplayGood.vue';
+import ModifyButton from './component/ModifyButton.vue';
+import CommentList from './component/CommentList.vue';
 export default {
   components: { 
       SsrRenderer, 
@@ -113,7 +127,9 @@ export default {
       TagView, 
       FileDownload, 
       BoardButton, 
-      DisplayGood 
+      DisplayGood,
+      ModifyButton,
+      CommentList,
     },
     name : "BasicDetail",
     props : {
@@ -187,6 +203,12 @@ export default {
                 const data = await this.$axios.delete(`/api/board/${this.table}/${this.item.wr_id}?token=${token}`);
             }
             this.deleteLoading = false;
+        },
+        modifyItem(token) {
+            // /board/${table}/${item.wr_id}?act=write
+            this.$router.push(
+                `/board/${this.table}/${this.item.wr_id}?act=write&token=${token}`
+            );
         }
     }
 }

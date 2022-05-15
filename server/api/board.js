@@ -3,17 +3,22 @@ const { isGrant, LV } = require('../../util/level');
 const { modelCall, getIp } = require('../../util/lib');
 const boardModel = require('./_model/boardModel');
 const fs = require('fs');
+const jwt = require('../plugins/jwt');
 
-async function isModify(config, user, wrItem) {
+async function isModify(config, req, wrItem) {
     let msg = '수정 권한이 없습니다.';
-    if (user) { // 회원
-        if (user.user_level >= LV.SUPER || user.user_id == wrItem.user_id) {
+    if (req.user) { // 회원
+        if (req.user.user_level >= LV.SUPER || req.user.user_id == wrItem.user_id) {
             msg = '';
         }
     } else { // 비회원
         // 세션에 비밀번호
-        // TODO : 비밀번호가 맞는지 확인
+        if (typeof(wrItem.token) === 'string' && wrItem.token == req.session.checkToken) {
+            msg = '';
+        }
     }
+    delete wrItem.token;
+    req.session.checkToken = '';
     return msg;
 }
 
@@ -68,7 +73,7 @@ router.put('/write/:brd_table/:wr_id', async (req, res) => {
 
     // 게시물 수정 권한 확인
     const config = await modelCall(boardModel.getConfig, brd_table);
-    const modifyMsg = await isModify(config, req.user, data);
+    const modifyMsg = await isModify(config, req, data);
 
     if (modifyMsg) { // 에러메시지가 있으면 에러
         return res.json({ err : modifyMsg });
@@ -131,6 +136,20 @@ router.delete('/:brd_table/:wr_id', async (req, res) => {
     const { brd_table, wr_id } = req.params;
     const { token } = req.query;
     res.json({ brd_table, wr_id, token});
+});
+
+// 비회원 비밀번호 체크
+router.post('/check/:brd_table/:wr_id', async (req, res) => {
+    const { brd_table, wr_id } = req.params;
+    const { password } = req.body;
+    const cnt = await modelCall(boardModel.checkItem, brd_table, wr_id, password);
+    if (cnt == 1) {
+        const token = jwt.getRandToken(16);
+        req.session.checkToken = token;
+        res.json({ token });
+    } else {
+        res.json({ err : "비밀번호가 올바르지 않습니다." });
+    }
 });
 
 module.exports = router;

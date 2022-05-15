@@ -69,13 +69,17 @@ export default {
   },
   methods: {
     ...mapActions('user', ['loginUserLocal', 'findIDLocal', 'findPasswordLocal', 'loginUserSocial']),
+    routerNext() {
+      const nextUrl = this.$route.query.nextUrl || '/'
+      this.$router.push(nextUrl);
+    },
     async login(form) {
       this.isLoading = true;
       const data = await this.loginUserLocal(form);
       this.isLoading = false;
       if (data) {
-        this.$router.push('/');
         this.$toast.info(`${this.user.user_name}님 환영합니다!!!`);
+        this.routerNext();
       }
     },
     async findId(form) {
@@ -125,8 +129,8 @@ export default {
         this.$toast.err(payload.err);
       } else {
         this.loginUserSocial(payload);
-        this.$router.push('/');
         this.$toast.info(`${this.user.user_name}님 환영합니다!!!`);
+        this.routerNext();
       }
     },
     

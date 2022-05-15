@@ -33,11 +33,11 @@
                 <input-password
                     label="비밀번호"
                     v-model="form.wr_password"
-                    :rules="rules.password()"
+                    :rules="rules.password({ required : !id })"
                 />
                 <input-password
                     label="비밀번호 확인"
-                    v-model="confimPw"
+                    v-model="confirmPw"
                     :rules="[rules.matchValue(form.wr_password)]"
                 />
             </template>
@@ -184,6 +184,7 @@ export default {
                 } else { // 수정
                     this.form = data;
                 }
+                this.form.wr_password = "";
             } else { // 새글
                 this.initForm();
             }
@@ -241,6 +242,11 @@ export default {
                 } else {
                     formData.append(key, this.form[key]);
                 }
+            }
+
+            // 작성시 토큰이 있는 경우 토큰을 삽입
+            if (this.$route.query.token) {
+                formData.append('token', this.$route.query.token);
             }
 
             let cnt = 0;
