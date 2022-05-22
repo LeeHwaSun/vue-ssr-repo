@@ -176,7 +176,6 @@ export default {
         if (!this.item) {
             this.fetchData();
         }
-        console.log(this.$vuetify);
     },
     destroyed() {
         this.SET_DETAIL(null);

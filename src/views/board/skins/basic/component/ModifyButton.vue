@@ -19,7 +19,7 @@
                 <input-password 
                     label="비밀번호" 
                     v-model="password" 
-                    :rules="rules.password()"
+                    :rules="rules.wr_password()"
                     prepend-icon="mdi-key"
                     class="mt-4"
                 />

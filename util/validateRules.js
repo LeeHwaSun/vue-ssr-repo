@@ -63,6 +63,23 @@ const rules = {
         ruleArr.push(rules.pattern(opt));
         return ruleArr;  
     },
+    wr_password(options) {
+        const defaultOptions = {
+            label : "글 비밀번호",
+            info : "글 비밀번호는 영어, 숫자를 포함하여 입력해주세요.",
+            len : 6,
+            required : true,
+            pattern : /^.*(?=^.{6,}$)(?=.*\d)(?=.*[a-zA-Z]).*$/
+        };
+        const opt = Object.assign(defaultOptions, options);
+        const ruleArr = [];
+        if (opt.required) {
+            ruleArr.push(rules.required(opt));
+        }
+        ruleArr.push(rules.min(opt));
+        ruleArr.push(rules.pattern(opt));
+        return ruleArr;
+    },
     email(options) {
         const defaultOptions = {
             label : "이메일",

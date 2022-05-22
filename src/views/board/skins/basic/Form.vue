@@ -33,7 +33,7 @@
                 <input-password
                     label="비밀번호"
                     v-model="form.wr_password"
-                    :rules="rules.password({ required : !id })"
+                    :rules="rules.wr_password({ required : !id })"
                 />
                 <input-password
                     label="비밀번호 확인"

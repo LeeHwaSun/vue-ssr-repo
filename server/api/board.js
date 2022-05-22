@@ -56,13 +56,33 @@ router.post('/write/:brd_table', async (req, res) => {
 
     // 게시물 작성 권한 확인
     const config = await modelCall(boardModel.getConfig, brd_table);
-    const grant = isGrant(req, config.brd_write_level);
+    //return res.json({err : '작업중', data});
+    
+    let grant;
+    let grantMsg = "";
+    if (data.wr_reply == 0) {
+        grant = isGrant(req, config.brd_write_level);
+        grantMsg = "게시물";
+    } else {
+        grant = isGrant(req, config.brd_comment_level);
+        grantMsg = "댓글"
+    }
     if (!grant) {
-        return res.json({ err : '게시물 작성 권한이 없습니다.' });
+        return res.json({ err : grantMsg + ' 작성 권한이 없습니다.' });
     }
 
     const result = await modelCall(boardModel.writeInsert, brd_table, data, req.files);
-    res.json(result);
+    if (data.wr_reply > 0) { // 댓글 내용만 넘겨주기
+        const options = {
+            stf : ['wr_id'],
+            stc : ['eq'],
+            stx : [result.wr_id]
+        };
+        const item = await modelCall(boardModel.getList, brd_table, config, options, req.user);
+        res.json(item.items[0]);
+    } else {
+        res.json(result);
+    }
 });
 
 // 게시물 수정
@@ -80,8 +100,17 @@ router.put('/write/:brd_table/:wr_id', async (req, res) => {
     }
 
     const result = await modelCall(boardModel.writeUpdate, brd_table, wr_id, data, req.files);
-    res.json(result);
-    
+    if (data.wr_reply > 0) { // 댓글 내용만 넘겨주기
+        const options = {
+            stf : ['wr_id'],
+            stc : ['eq'],
+            stx : [result.wr_id]
+        };
+        const item = await modelCall(boardModel.getList, brd_table, config, options, req.user);
+        res.json(item.items[0]);
+    } else {
+        res.json(result);
+    }    
 })
 
 // 게시물 목록 조회
