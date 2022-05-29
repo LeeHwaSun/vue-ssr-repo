@@ -76,6 +76,18 @@
                         :loading="deleteLoading"
                     />
                     <!-- TODO : 비회원 게시물 삭제 버튼 -->
+                    <modify-button 
+                        v-if="isModify == 'NO_MEMBER'" 
+                        color="error"
+                        class="ml-2"
+                        :table="table"
+                        :wr_id="item.wr_id"
+                        label="삭제"
+                        @onValid="deleteItem"
+                    >
+                        <v-icon left>mdi-delete</v-icon>
+                        삭제
+                    </modify-button>
                     <!-- // 삭제 -->
                 </v-col>
                 <v-col cols="4" class="text-center text-no-wrap">
@@ -200,11 +212,15 @@ export default {
             );
             if (confirm) {
                 const data = await this.$axios.delete(`/api/board/${this.table}/${this.item.wr_id}?token=${token}`);
+
+                if (data) {
+                    this.$toast.info(`${data}개의 게시물이 삭제되었습니다.`);
+                    this.$router.push(`/board/${this.table}`);
+                }
             }
             this.deleteLoading = false;
         },
         modifyItem(token) {
-            // /board/${table}/${item.wr_id}?act=write
             this.$router.push(
                 `/board/${this.table}/${this.item.wr_id}?act=write&token=${token}`
             );

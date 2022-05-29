@@ -8,6 +8,7 @@ const jwt = require('../../plugins/jwt');
 const tagModel = require('./tagModel');
 const goodModel = require('./goodModel');
 const { getSummary } = require('../../../util/lib');
+const { LV } = require('../../../util/level');
 
 const boardModel = {
     async getConfig(brd_table) {
@@ -228,6 +229,15 @@ const boardModel = {
         const sql = sqlHelper.SelectLimit(table, options);
         const [[{ totalItems }]] = await db.execute(sql.countQuery, sql.values);
         const [ items ] = await db.execute(sql.query, sql.values);
+
+        for (const item of items) {
+            if (user) {
+                item.goodFlag = await goodModel.getFlag(brd_table, item.wr_id, user.user_id);
+            } else {
+                item.goodFlag = 0;
+            }
+        }
+
         return { items, totalItems };
     },
     async getDetail(brd_table, wr_id, user) {
@@ -281,6 +291,57 @@ const boardModel = {
         }, ['COUNT(*) AS cnt']);
         const [[{ cnt }]] = await db.execute(sql.query, sql.values);
         return cnt;
+    },
+    async deleteItem(brd_table, wr_id, user) {
+        let delCnt = 0;
+        const table = `${TABLE.WRITE}${brd_table}`;
+        // 답글 목록을 가져오고
+        const cSql = sqlHelper.SelectSimple(table, {wr_parent : wr_id}, ['wr_id']);
+        const [ children ] = await db.execute(cSql.query, cSql.values);
+        // 최고관리자이면 다 지울거고
+        if (user && user.user_level >= LV.SUPER) {
+            // 자식들 모두 반복해서 삭제
+            for (const child of children) {
+                delCnt += await boardModel.deleteItem(brd_table, child.wr_id, user);
+            }
+            delCnt += await boardModel.removeItem(brd_table, wr_id);
+        } else { // 아니면
+            if (children.length == 0) { // 답글 없음
+                // 코멘트가 있으면 에러
+                const rSql = sqlHelper.SelectSimple(table, {wr_reply : wr_id}, ['wr_id']);
+                const [ commentList ] = await db.execute(rSql.query, rSql.values);
+                if (commentList.length == 0) {
+                    delCnt += await boardModel.removeItem(brd_table, wr_id);
+                } else {
+                    throw new Error('댓글이 있어 삭제할 수 없습니다.');
+                }
+            } else {
+                throw new Error('답글이 있어 삭제할 수 없습니다.');
+            }
+        }
+        return delCnt;
+    },
+    async removeItem(brd_table, wr_id) {
+        const table = `${TABLE.WRITE}${brd_table}`;
+        // 태그 목록 삭제
+        await tagModel.deleteTags(brd_table, wr_id);
+        // 관련 파일 삭제
+        const fSql = sqlHelper.SelectSimple(TABLE.BOARD_FILE, {
+            brd_table, 
+            wr_id
+        }, ['brd_file_id', 'brd_file_src']);
+        const [ files ] = await db.execute(fSql.query, fSql.values);
+        for (const file of files) {
+            await boardModel.removeFile(brd_table, file);
+        }
+        // 댓글 있으면 댓글도 다 삭제
+        const cSql = sqlHelper.DeleteSimple(table, { wr_reply : wr_id });
+        await db.execute(cSql.query, cSql.values);
+        // 게시물 삭제
+        const sql = sqlHelper.DeleteSimple(table, { wr_id });
+        const [rows] = await db.execute(sql.query, sql.values);
+
+        return rows.affectedRows;
     }
 };
 

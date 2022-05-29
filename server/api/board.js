@@ -164,7 +164,21 @@ router.get('/download/:brd_table/:brd_file_name', async (req, res) => {
 router.delete('/:brd_table/:wr_id', async (req, res) => {
     const { brd_table, wr_id } = req.params;
     const { token } = req.query;
-    res.json({ brd_table, wr_id, token});
+    // 게시판 설정
+    const config = await modelCall(boardModel.getConfig, brd_table);
+    // 게시물 가지고 오고
+    const data = await modelCall(boardModel.getDetail, brd_table, wr_id, req.user);
+    data.token = token;
+    // 권한 확인
+    const modifyMsg = await isModify(config, req, data);
+
+    if (modifyMsg) { // 에러메시지가 있으면 에러
+        return res.json({ err : modifyMsg });
+    }
+
+    // 삭제
+    const result = await modelCall(boardModel.deleteItem, brd_table, wr_id, req.user);
+    res.json(result);
 });
 
 // 비회원 비밀번호 체크

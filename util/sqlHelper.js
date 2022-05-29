@@ -110,10 +110,12 @@ const sqlHelper = {
 
         // 페이지네이션
         let limit = "";
-        if (options.page && options.itemsPerPage) {
-            const start = ( options.page - 1 ) * options.itemsPerPage;
-            limit = ` LIMIT ${start}, ${options.itemsPerPage}`;
-        }
+        if (options.itemsPerPage) {
+            if (options.itemsPerPage > 0) {
+                const start = options.limitStart || (options.page - 1) * options.itemsPerPage;
+                limit = ` LIMIT ${start}, ${options.itemsPerPage} `;
+            }
+        }        
 
         let query = `SELECT * FROM ${table} ${where} ${order} ${limit}`;
         if (cols.length) {

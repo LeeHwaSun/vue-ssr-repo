@@ -6,7 +6,6 @@
                     v-on="on" 
                     v-bind="{ ...attrs, ...btnProps }"
                     :color="goodColor"
-                    class="mr-2"
                     @click="goodUpdate(1)"
                 >
                     <v-icon left>{{ icon.good }}</v-icon>
@@ -15,13 +14,12 @@
             </template>
             <span>{{ label.good }}</span>
         </v-tooltip>
-        <v-tooltip top>
+        <v-tooltip v-if="!goodOnly" top>
             <template v-slot:activator="{ on, attrs }">
                 <v-btn 
                     v-on="on" 
                     v-bind="{ ...attrs, ...btnProps }"
                     :color="badColor"
-                    class="ml-2"
                     @click="goodUpdate(2)"
                 >
                     <v-icon left>{{ icon.bad }}</v-icon>
@@ -52,10 +50,10 @@ export default {
         },
         icon : {
             type : Object,
-            default : {
+            default : () => ({
                 good : "mdi-heart-outline",
                 bad : "mdi-heart-broken-outline"
-            }
+            }),
         },
         label : {
             type : Object,
@@ -63,6 +61,10 @@ export default {
                 good : "좋아요",
                 bad : "싫어요"
             }
+        },
+        goodOnly : {
+            type : Boolean,
+            default : false,
         }
     },
     data() {
