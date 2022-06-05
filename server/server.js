@@ -11,20 +11,25 @@ require('./plugins/pm2Bus');
 	const port = process.env.VUE_APP_SERVER_PORT || 3000;
 	const webServer = http.createServer(app);
 
+	// Logger
+	const logger = require('./plugins/logger');
+	global.$logger = logger;
+
 	// Socket.IO 적용
 	const socket = require('./plugins/socket');
 	socket(webServer);
 
 	// 설정정보 로드
 	const configModel = require('./api/_model/configModel');
-	console.log("설정 로드 전");
+	$logger.info("설정 로드 전")
 	await configModel.load();
-	console.log("설정 로드 후");
+	$logger.info("설정 로드 후");
 
 	let isDisableKeepAlive = false;
 	app.use((req, res, next) => {
 		if (isDisableKeepAlive) {
 			console.log('Keep Alive :', isDisableKeepAlive);
+			$logger.info('Keep Alive : ' + isDisableKeepAlive);
 			res.set('Connection', 'close')
 		}
 		next();
@@ -76,6 +81,7 @@ require('./plugins/pm2Bus');
 	const autoRoute = require('./autoRoute');
 	autoRoute('/api', app);
 	app.use('/api/*', (req, res) => {
+		$logger.error('요청하신 API가 없습니다.');
 		res.json( {err : "요청하신 API가 없습니다."} );
 	});
 
@@ -105,9 +111,10 @@ require('./plugins/pm2Bus');
 
 		stream.on('end', ()=> {
 			const memSize = Object.entries(process.memoryUsage())[0][1];
-			console.log('스트림 렌더 종료 ', (memSize / 1024 / 1024).toFixed(4));
+			$logger.info('스트림 렌더 종료 ', (memSize / 1024 / 1024).toFixed(4));
 			if (process.platform == 'linux') {
 				if (memSize > 150000000) {
+					$logger.info('서버 재시작');
 					process.emit('SIGINT');
 				}
 			}
@@ -117,13 +124,13 @@ require('./plugins/pm2Bus');
 	// 서버 Listen
 	webServer.listen(port, () => {
 		process.send('ready');
-		console.log(`http://localhost:${port}`)
+		$logger.info(`http://localhost:${port} 서버 시작`);
 	});
 
 	process.on('SIGINT', function() {
 		isDisableKeepAlive = true;
 		webServer.close(function() {
-			console.log('server closed');
+			$logger.info('server closed');
 			process.exit(0);
 		})
 	});

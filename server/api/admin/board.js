@@ -27,4 +27,11 @@ router.put('/:brd_table', async (req, res) => {
     res.json(result);
 });
 
+router.delete('/:brd_table', async (req, res) => {
+    const { brd_table } = req.params;
+    $logger.info('[adminBoard] delete : ' + brd_table);
+    const result = await modelCall(admBoardModel.removeBoard, req);
+    res.json(result);
+});
+
 module.exports = router;

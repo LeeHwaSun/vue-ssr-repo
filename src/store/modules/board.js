@@ -18,6 +18,11 @@ export const mutations = {
     },
     SET_DETAIL(state, detail) {
         state.detail = detail;
+    },
+    VIEW_UP(state) {
+        if (state.detail) {
+            state.detail.wr_view++;
+        }
     }
 };
 

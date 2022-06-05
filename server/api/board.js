@@ -6,6 +6,7 @@ const fs = require('fs');
 const jwt = require('../plugins/jwt');
 
 async function isModify(config, req, wrItem) {
+    $logger.info('[board.isModify] parameters ' + req.user);
     let msg = '수정 권한이 없습니다.';
     if (req.user) { // 회원
         if (req.user.user_level >= LV.SUPER || req.user.user_id == wrItem.user_id) {
@@ -111,15 +112,24 @@ router.put('/write/:brd_table/:wr_id', async (req, res) => {
     } else {
         res.json(result);
     }    
-})
+});
+
+// 게시물 조회수 증가
+router.put('/view/:brd_table/:wr_id', async (req, res) => {
+    const { brd_table, wr_id } = req.params;
+    const result = await modelCall(boardModel.viewUp, brd_table, wr_id);
+    res.json(result);
+});
 
 // 게시물 목록 조회
 router.get('/list/:brd_table', async (req, res) => {
+    $logger.info('[board.list] parameters ' + req.params.brd_table);
     const { brd_table } = req.params;
     // 게시물 목록 보기 권한 확인
     const config = await modelCall(boardModel.getConfig, brd_table);
     const grant = isGrant(req, config.brd_list_level);
     if (!grant) {
+        $logger.error('게시물 목록 보기 권한이 없습니다. ' + req.params.brd_table + ', grant : ' + grant);
         return res.json({ err : '게시물 목록 보기 권한이 없습니다.' });
     }
 

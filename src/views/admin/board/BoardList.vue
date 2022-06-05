@@ -15,10 +15,21 @@
             :loading="loading"
             class="elevation-1"
         >
+            <template v-slot:item.brd_subject="{ item }">
+                <v-btn text :to="`/board/${item.brd_table}`" class="ma-0 pa-0 justify-start">{{ item.brd_subject }}</v-btn>
+            </template>
             <template v-slot:item.cmd="{ item }">
-                <tooltip-btn label="Modify" icon :to="`/adm/board/form/${item.brd_table}`">
+                <v-btn icon :to="`/adm/board/form/${item.brd_table}`">
                     <v-icon>mdi-pencil</v-icon>
-                </tooltip-btn>
+                </v-btn>
+                <v-btn 
+                    v-if="isSuper" 
+                    icon 
+                    @click="removeBoard(item)" 
+                    :loading="btnLoading"
+                >
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
             </template>
         </v-data-table>
     </v-container>
@@ -28,6 +39,7 @@
 import TooltipBtn from '../../../components/layout/common/TooltipBtn.vue';
 import { deepCopy } from '../../../../util/lib';
 import qs from 'qs';
+import { mapGetters } from 'vuex';
 export default {
     components : { TooltipBtn, },
     name : "AdmBoardList",
@@ -48,7 +60,11 @@ export default {
             options : {},
             totalItems : 0,
             loading: false,
+            btnLoading: false,
         }
+    },
+    computed : {
+        ...mapGetters('user', ['isSuper']),
     },
     watch : {
         options: {
@@ -70,6 +86,23 @@ export default {
                 this.totalItems = data.totalItems;
             }
             this.loading = false;
+        },
+        async removeBoard(item) {
+            const confirm = await this.$myNotify.confirm(
+                `[ ${item.brd_subject} ] 게시판을 삭제 하시겠습니까?`, 
+                '게시판 삭제', 
+                { icon : 'mdi-alert' }
+            );
+            if (!confirm) return;
+            
+            // TODO : 서버에 요청
+            this.btnLoading = true;
+            const data = await this.$axios.delete(`/api/admin/board/${item.brd_table}`);
+            this.btnLoading = false;
+            if (data) {
+                this.$toast.info(`${item.brd_subject} 게시판 삭제 완료.(파일 : ${data.fileCnt}, 태그 : ${data.tagCnt}, 좋아요 : ${data.goodCnt})`);
+                this.getDataFromApi();
+            }
         }
     }
 }

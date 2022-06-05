@@ -187,13 +187,15 @@ export default {
     mounted() {
         if (!this.item) {
             this.fetchData();
+        } else {
+            this.viewUp();
         }
     },
     destroyed() {
         this.SET_DETAIL(null);
     },
     methods : {
-        ...mapMutations('board', ['SET_DETAIL']),
+        ...mapMutations('board', ['SET_DETAIL', 'VIEW_UP']),
         ...mapActions('board', ['getBoardDetail']),
         async fetchData() {
             const headers = {};
@@ -202,6 +204,10 @@ export default {
             }
 
             await this.getBoardDetail({ table : this.table, id : this.id, headers });
+
+            if (!this.$ssrContext) {
+                this.viewUp();
+            }
         },
         async deleteItem(token) {
             this.deleteLoading = true;
@@ -224,6 +230,29 @@ export default {
             this.$router.push(
                 `/board/${this.table}/${this.item.wr_id}?act=write&token=${token}`
             );
+        },
+        async viewUp() {
+            const today = this.$moment().format('L');
+            const view = JSON.parse(window.localStorage.getItem("view")) || {};
+            const keys = Object.keys(view);
+            for (const key of keys) { // 오늘이 아니면 제거
+                if (key != today) {
+                    delete view[key];
+                }
+            }
+            if (!view[today]) {
+                view[today] = {};
+            }
+            const curWrite = `${this.table}_${this.id}`;
+            if (!view[today][curWrite]) {
+                // 조회 수 증가
+                view[today][curWrite] = true;
+                // 서버에 증가하는 요청
+                await this.$axios.put(`/api/board/view/${this.table}/${this.id}`);
+                // Mutation view 증가
+                this.VIEW_UP();
+                window.localStorage.setItem("view", JSON.stringify(view));
+            }
         }
     }
 }
