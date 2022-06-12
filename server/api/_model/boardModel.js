@@ -236,6 +236,10 @@ const boardModel = {
             } else {
                 item.goodFlag = 0;
             }
+            // 이미지 목록
+            const files = await boardModel.getItemFiles(brd_table, item.wr_id, item.wr_content);
+            item.wrImgs = files.wrImgs;
+            item.wrFiles = files.wrFiles;
         }
 
         return { items, totalItems };

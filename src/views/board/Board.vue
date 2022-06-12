@@ -9,7 +9,7 @@
 
 <script>
 import upperFirst from 'lodash/upperFirst';
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapGetters, mapState, mapActions, mapMutations } from 'vuex';
 import SKINS from './skins';
 import BoardError from './BoardError.vue';
 
@@ -91,7 +91,13 @@ export default {
             this.getBoardConfig(this.table);
         }
     },
+    destroyed() {
+        this.SET_CONFIG(null);
+        this.SET_LIST({items: [], totalItems: 0});
+        this.SET_DETAIL(null);
+    },
     methods : {
+        ...mapMutations('board', ['SET_CONFIG', 'SET_LIST', 'SET_DETAIL']),
         ...mapActions('board', ['getBoardConfig']),
     }
 }

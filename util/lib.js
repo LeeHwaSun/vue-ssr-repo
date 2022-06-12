@@ -12,9 +12,10 @@ const lib = {
     modelCall : async (fn, ...args) => {
         try {
             const result = await fn( ...args );
+            $logger.info(`${fn.name} success : ${JSON.stringify(result)}`);
             return result;
         } catch (e) {
-            console.trace(e);
+            $logger.error(`${fn.name} error : ${e.message}`);
             return { err : e.message }
         }
     },

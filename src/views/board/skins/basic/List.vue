@@ -209,8 +209,10 @@ export default {
     },
     destroyed() {
         window.removeEventListener('popstate', this.routeChange);
+        this.SET_LIST({items: [], totalItems: 0});
     },
     methods : {
+        ...mapMutations('board', ['SET_LIST']),
         ...mapActions('board', ['getBoardList']),
         initOptions() {
             const { query } = this.$route;
