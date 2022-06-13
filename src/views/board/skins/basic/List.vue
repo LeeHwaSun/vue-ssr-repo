@@ -86,7 +86,7 @@
 
 <script>
 import qs from 'qs';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import { deepCopy } from '../../../../../util/lib';
 import SearchField from '../../../../components/layout/common/SearchField.vue';
 import CategorySelect from './component/CategorySelect.vue';
