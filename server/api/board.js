@@ -138,6 +138,25 @@ router.get('/list/:brd_table', async (req, res) => {
     res.json(result);
 });
 
+// 최근 게시물 가져오기
+router.get('/latest/:brd_table', async (req, res) => {
+    const { brd_table } = req.params;
+    const { limit } = req.query;
+    const config = await modelCall(boardModel.getConfig, brd_table);
+
+    const options = {
+        page : 1,
+        itemsPerPage : limit,
+        stf : ['wr_reply'],
+        stc : ['eq'],
+        stx : ['0']
+    };
+    const result = await modelCall(boardModel.getList, brd_table, config, options, req.user);
+    result.subject = config.brd_subject;
+    delete result.totalItems;
+    res.json(result);
+});
+
 // 게시물 상세 조회
 router.get('/detail/:brd_table/:wr_id', async (req, res) => {
     const { brd_table, wr_id } = req.params;

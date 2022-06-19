@@ -6,6 +6,7 @@ export const state = () => ({
     list : [],
     totalItems : 0,
     detail : null,
+    latest: {},
 });
 
 export const mutations = {
@@ -23,6 +24,9 @@ export const mutations = {
         if (state.detail) {
             state.detail.wr_view++;
         }
+    },
+    SET_LATEST(state, { table, payload }) {
+        Vue.set(state.latest, table, payload);
     }
 };
 
@@ -68,6 +72,16 @@ export const actions = {
         );
         if (data) {
             commit('SET_DETAIL', data);
+        }
+    },
+    async getLatest({ commit }, { table, limit }) {
+        const { $axios } = Vue.prototype;
+        const data = await $axios.get(`/api/board/latest/${table}?limit=${limit}`);
+        /*
+        latest : {table : {subject : "제목", items : []}}
+        */
+        if (data) {
+            commit('SET_LATEST', { table, payload: data });
         }
     }
 };

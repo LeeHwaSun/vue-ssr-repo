@@ -197,7 +197,7 @@ export default {
                 wr_email : this.user ? this.user.user_email : "",
                 wr_name : this.user ? this.user.user_name : "",
                 wr_password : "",
-                wr_category : this.$route.query.ca || this.config.brd_category[0], // TODO : 링크할 때 카테고리 정보를 넘긴다
+                wr_category : this.$route.query.ca || this.config.brd_category[0] | "", // TODO : 링크할 때 카테고리 정보를 넘긴다
                 wr_title : "",
                 wr_content : "",
                 wrTags : [],
