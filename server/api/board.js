@@ -9,7 +9,9 @@ async function isModify(config, req, wrItem) {
     $logger.info('[board.isModify] parameters ' + req.user);
     let msg = '수정 권한이 없습니다.';
     if (req.user) { // 회원
-        if (req.user.user_level >= LV.SUPER || req.user.user_id == wrItem.user_id) {
+        if (config.brd_table == 'popup' && req.user.user_level >= LV.ADMIN) {
+            msg = '';
+        } else if (req.user.user_level >= LV.SUPER || req.user.user_id == wrItem.user_id) {
             msg = '';
         }
     } else { // 비회원

@@ -30,10 +30,10 @@
             hide-default-footer
             class="fixedTable"
         >
-            <template v-slot:item.no="{ index }">
+            <template #item.no="{ index }">
                 {{ getNo(index) }}
             </template>
-            <template v-slot:item.wr_title="{ item }">
+            <template #item.wr_title="{ item }">
                 <v-btn 
                     :to="`/board/${table}/${item.wr_id}`" 
                     block 
@@ -55,7 +55,7 @@
                             {{ item.wr_title }}
                         </div>
                         <v-tooltip top>
-                            <template v-slot:activator="{on, attrs}">
+                            <template #activator="{on, attrs}">
                                 <v-chip 
                                     v-on="on" 
                                     v-bind="attrs"
@@ -72,7 +72,7 @@
                     </div>
                 </v-btn>
             </template>
-            <template v-slot:item.wr_create_at="{ item }">
+            <template #item.wr_create_at="{ item }">
                 <display-time :time="item.wr_create_at"/>
             </template>
         </v-data-table>
@@ -145,6 +145,7 @@ export default {
                     align : "start", 
                     sortable : false, 
                     searchable : true,
+                    cellClass : "text-truncate",
                 },
                 {
                     text : "작성자", 

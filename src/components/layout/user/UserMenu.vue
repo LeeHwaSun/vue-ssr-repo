@@ -41,7 +41,8 @@ export default {
                 { title : "Config", icon : "mdi-cog", to : "/adm/config" },
                 { title : "User", icon : "mdi-account-cog", to : "/adm/user" },
                 { title : "Menu", icon : "mdi-menu", to : "/adm/menu"},
-                { title : "Board", icon : "mdi-clipboard-text-multiple-outline", to : "/adm/board/list"}
+                { title : "Board", icon : "mdi-clipboard-text-multiple-outline", to : "/adm/board/list" },
+                { title : "Popup", icon : "mdi-layers-triple-outline", to : "/board/popup" }
             ]
         }
     },
