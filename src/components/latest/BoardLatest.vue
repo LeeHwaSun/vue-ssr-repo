@@ -72,7 +72,6 @@ export default {
             const { table, limit } = this;
             this.loading = true;
             await this.getLatest({ table, limit });
-            console.log(this.subject, this.items);
             this.loading = false;
         }
     }

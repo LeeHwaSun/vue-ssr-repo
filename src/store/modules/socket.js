@@ -26,7 +26,6 @@ export const actions = {
         const { $socket } = Vue.prototype;
         if (state.rooms.length) {
             $socket.emit('rooms:join', state.rooms);
-            console.log("initRooms", state.rooms);
         }
     },
     async joinRoom({ commit, state }, room) {
@@ -35,7 +34,6 @@ export const actions = {
         if (idx < 0) {
             commit("ROOM_JOIN", room);
             $socket.emit('room:join', room);
-            console.log(`joinRoom : ${room}`);
         }
     },
     async leaveRoom({ commit, state }, room) {
@@ -44,7 +42,6 @@ export const actions = {
         if (idx >= 0) {
             commit("ROOM_LEAVE", idx);
             $socket.emit('room:leave', room);
-            console.log(`leaveRoom : ${room}`);
         }
     }
 };

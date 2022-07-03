@@ -1,7 +1,5 @@
 <template>
     <v-carousel 
-        cycle 
-        hide-delimiters 
         show-arrows-on-hover
     >
         <v-carousel-item

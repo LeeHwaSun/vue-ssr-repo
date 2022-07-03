@@ -56,7 +56,6 @@ _axios.interceptors.response.use(
       errMsg = data.err;
     }
 
-    console.log('AXIOS :', data);
     if (errMsg) {
       if ($toast) $toast.error(errMsg);
       if ($Progress) $Progress.fail();

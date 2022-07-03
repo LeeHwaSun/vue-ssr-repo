@@ -61,6 +61,14 @@
                 </div>
             </template>
             <template #item.cmd="{ item }">
+                <tooltip-btn
+                    label="View"
+                    icon
+                    color="primary"
+                    @click="popupView(item)"
+                >
+                    <v-icon>mdi-eye</v-icon>
+                </tooltip-btn>
                 <tooltip-btn 
                     label="Modify" 
                     icon 
@@ -228,7 +236,7 @@ export default {
                     align : "center", 
                     sortable : false, 
                     searchable : false,
-                    width : "120" 
+                    width : "160" 
                 }
             ];
             return headers;

@@ -46,12 +46,10 @@ export default {
 	socket() {
 		return {
 			"connect" : () => {
-				console.log("socket connect");
 				this.SET_ONLINE(true);
 				this.initRooms();
 			},
 			"disconnect" : () => {
-				console.log("socket disconnect");
 				this.SET_ONLINE(false);
 			},
 			"config:update" : (data) => {

@@ -18,7 +18,6 @@ const clientMixin = {
             for (const ev of this.socketEvents) {
                 this.$socket.on(ev, socket[ev]);
             }
-            console.log(this.socketEvents);
         }
     },
     destroyed() {
