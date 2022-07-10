@@ -42,7 +42,8 @@ export default {
                 { title : "User", icon : "mdi-account-cog", to : "/adm/user" },
                 { title : "Menu", icon : "mdi-menu", to : "/adm/menu"},
                 { title : "Board", icon : "mdi-clipboard-text-multiple-outline", to : "/adm/board/list" },
-                { title : "Popup", icon : "mdi-layers-triple-outline", to : "/board/popup" }
+                { title : "Popup", icon : "mdi-layers-triple-outline", to : "/board/popup" },
+                { title : "Contents", icon : "mdi-content-paste", to : "/board/contents" },
             ]
         }
     },

@@ -74,6 +74,16 @@ export const actions = {
             commit('SET_DETAIL', data);
         }
     },
+    async getContentsDetail({ commit }, { wr_1, headers }) {
+        const { $axios } = Vue.prototype;
+        const data = await $axios.get(
+            `/api/contents/${wr_1}`, 
+            { headers }
+        );
+        if (data) {
+            commit('SET_DETAIL', data);
+        }
+    },
     async getLatest({ commit }, { table, limit }) {
         const { $axios } = Vue.prototype;
         const data = await $axios.get(`/api/board/latest/${table}?limit=${limit}`);
