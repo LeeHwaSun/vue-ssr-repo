@@ -30,6 +30,14 @@ export default {
                 return "ContentsError";
             }
         },
+        wr_1() {
+            return this.$route.params.wr_1;
+        }
+    },
+    watch: {
+        wr_1() {
+            this.fetchData();
+        }
     },
     serverPrefetch() {
         return this.fetchData();
@@ -52,7 +60,7 @@ export default {
                 headers.token = this.$ssrContext.token;
             }
 
-            await this.getContentsDetail({ wr_1 : this.$route.params.wr_1, headers });
+            await this.getContentsDetail({ wr_1 : this.wr_1, headers });
         },
     }
 }
