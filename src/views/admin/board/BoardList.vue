@@ -14,6 +14,7 @@
             :server-items-length="totalItems"
             :loading="loading"
             class="elevation-1"
+            hide-default-footer
         >
             <template v-slot:item.brd_subject="{ item }">
                 <v-btn text :to="`/board/${item.brd_table}`" class="ma-0 pa-0 justify-start">{{ item.brd_subject }}</v-btn>
@@ -32,6 +33,11 @@
                 </v-btn>
             </template>
         </v-data-table>
+        <v-pagination
+            v-model="options.page"
+            :length="pageCount"
+            class="mt-4"
+        />
     </v-container>
 </template>
 
@@ -61,10 +67,14 @@ export default {
             totalItems : 0,
             loading: false,
             btnLoading: false,
+            pageItems : [2, 5, 10]
         }
     },
     computed : {
         ...mapGetters('user', ['isSuper']),
+        pageCount() {
+            return Math.ceil(this.totalItems / this.options.itemsPerPage);
+        }
     },
     watch : {
         options: {

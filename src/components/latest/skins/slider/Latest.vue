@@ -1,6 +1,8 @@
 <template>
     <v-carousel 
         show-arrows-on-hover
+        hide-delimiter-background
+        height="450"
     >
         <v-carousel-item
             v-for="(item, i) in items"

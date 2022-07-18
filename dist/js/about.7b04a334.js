@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["about"],{f820:function(t,n,a){"use strict";a.r(n);var s=function(){var t=this;t._self._c;return t._m(0)},u=[function(){var t=this,n=t._self._c;return n("div",{staticClass:"about"},[n("h1",[t._v("This is an about page")])])}],e={name:"About",title:"도움말"},i=e,o=a("2877"),l=Object(o["a"])(i,s,u,!1,null,null,null);n["default"]=l.exports}}]);
+//# sourceMappingURL=about.7b04a334.js.map

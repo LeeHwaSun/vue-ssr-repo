@@ -51,7 +51,11 @@
                         @click="$router.push(`/board/${table}/${item.wr_id}`)" 
                         class="text-decoration-none"
                     >
-                        <v-img :src="getImage(item, table, imgSize)" :aspect-ratio="1" style="border: 0.1px solid #b8b8b8;" />
+                        <v-img 
+                            :src="getImage(item, table, imgSize)" 
+                            :aspect-ratio="1" 
+                            style="border: 0.1px solid #b8b8b8;"
+                        />
                     </a>
                     <div class="d-flex justify-space-between align-center ml-4 pt-2 pb-2">
                         <div>
