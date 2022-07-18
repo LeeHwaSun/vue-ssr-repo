@@ -67,6 +67,11 @@ const routes = [
         //component: BoardRenderer
     },
     {
+        path: '/testPage',
+        name: 'Test',
+        component: () => import(/* webpackChunkName: "Test" */ '../views/Test.vue')
+    },
+    {
         path: '*',
         name: 'Error',
         component: () => import(/* webpackChunkName: "error" */ '../views/Error.vue')

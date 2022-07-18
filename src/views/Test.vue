@@ -19,10 +19,10 @@
 <script>
 import { mapActions } from 'vuex';
 export default {
-	name: "Home",
+	name: "Test",
 	data() {
 		return {
-			title : "메인",
+			title : "테스트 페이지",
 			toId : "",
 			userMsg : "",
 		}
