@@ -4,7 +4,8 @@
         :table="table" 
         :subject="subject" 
         :items="items" 
-        :loading="loading" 
+        :loading="loading"
+        :isDivided="isDivided"
     />
 </template>
 
@@ -27,6 +28,10 @@ export default {
         limit : {
             type : Number,
             default : 5,
+        },
+        isDivided : {
+            type : Boolean,
+            default : false
         }
     },
     data() {

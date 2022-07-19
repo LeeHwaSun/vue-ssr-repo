@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card :width="calculateWidth ? '50%' : '100%'">
         <v-card-title>
             {{ subject }}
             <v-spacer />
@@ -7,7 +7,7 @@
                 <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
         </v-card-title>
-        <v-list>
+        <v-list v-if="items.length">
             <div v-for="item in items" :key="item.wr_id">
                 <v-divider />
                 <v-list-item :to="`/board/${table}/${item.wr_id}`">
@@ -23,7 +23,7 @@
                     </v-chip>
                     <v-list-item-content>
                         <div class="text-truncate">
-                            {{ item.wr_title}}
+                            {{ item.wr_title }}
                             <v-chip small label color="transparent" class="ml-2">
                                 <v-icon x-small left>mdi-message</v-icon>
                                 {{ item.replys }}
@@ -39,6 +39,12 @@
                 </v-list-item>
             </div>
         </v-list>
+        <div v-else>
+            <div><v-divider /></div>
+            <div class="d-flex justify-center align-center" style="height: 100px;">
+                데이터가 없습니다.
+            </div>
+        </div>
     </v-card>
 </template>
 
@@ -63,8 +69,20 @@ export default {
         loading : {
             type : Boolean,
             default : false,
+        },
+        isDivided : {
+            type : Boolean,
+            default : false
         }
-    }
+    },
+    computed: {
+        calculateWidth() {
+            if (this.isDivided) {
+                return true;
+            }
+            return false;
+        }
+    },
 }
 </script>
 

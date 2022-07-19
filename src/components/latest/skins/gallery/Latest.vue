@@ -8,7 +8,7 @@
             </v-btn>
         </v-card-title>
         <v-divider />
-        <v-container fluid>
+        <v-container v-if="items.length" fluid>
             <v-row>
                 <v-col 
                     class="mt-4 gal-item" 
@@ -48,7 +48,12 @@
                 </v-col>
             </v-row>
         </v-container>
-        
+        <div v-else>
+            <div><v-divider /></div>
+            <div class="d-flex justify-center align-center" style="height: 100px;">
+                데이터가 없습니다.
+            </div>
+        </div>
     </v-card>
 </template>
 

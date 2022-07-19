@@ -20,7 +20,7 @@
                 <v-btn text :to="`/board/${item.brd_table}`" class="ma-0 pa-0 justify-start">{{ item.brd_subject }}</v-btn>
             </template>
             <template v-slot:item.cmd="{ item }">
-                <v-btn icon :to="`/adm/board/form/${item.brd_table}`">
+                <v-btn icon :to="`/adm/board/form/${item.brd_table}`" color="primary">
                     <v-icon>mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn 
@@ -28,6 +28,7 @@
                     icon 
                     @click="removeBoard(item)" 
                     :loading="btnLoading"
+                    color="error"
                 >
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>

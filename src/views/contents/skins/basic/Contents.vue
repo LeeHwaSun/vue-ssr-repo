@@ -1,5 +1,7 @@
 <template>
-    <v-container>
+    <div>
+        <content-title :item="item" />
+        <v-container>
             <!-- <h2>{{ item.wr_title }}</h2> -->
             <ssr-renderer>
                 <template>
@@ -9,13 +11,15 @@
                     <div v-html="item.wr_content"></div>
                 </template>
             </ssr-renderer>
-    </v-container>
+        </v-container>
+    </div>
 </template>
 
 <script>
 import SsrRenderer from '../../../../components/util/SsrRenderer.vue';
+import ContentTitle from '../../component/ContentTitle.vue';
 export default {
-    components: { SsrRenderer },
+    components: { SsrRenderer, ContentTitle },
     name: "BasicContents",
     props: {
         item : {
