@@ -14,7 +14,7 @@
 		</v-parallax>
 		<!--board-latest table="gallery1" skin="slider" :limit="3" /-->
 		<!-- <board-latest table="test1" skin="basic" :limit="4" /> -->
-		<span class="d-flex" v-if="!isXs">
+		<!-- <span class="d-flex" v-if="!isXs">
 			<board-latest table="board" skin="basic" :limit="4" :isDivided="true" />
 			<board-latest table="notice" skin="basic" :limit="4" :isDivided="true" />
 		</span>
@@ -22,9 +22,9 @@
 			<board-latest table="board" skin="basic" :limit="4" />
 			<board-latest table="notice" skin="basic" :limit="4" />
 		</span>
-		<board-latest table="qna" skin="basic" :limit="5" />
+		<board-latest table="qna" skin="basic" :limit="5" /> -->
 		<!-- <board-latest table="gallery1" skin="gallery" :limit="6" /> -->
-		<board-latest table="gallery" skin="gallery" :limit="6" />
+		<!-- <board-latest table="gallery" skin="gallery" :limit="6" /> -->
 		<popup-opener />
 	</div>
 </template>
