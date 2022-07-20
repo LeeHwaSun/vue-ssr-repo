@@ -51,7 +51,7 @@
                 </v-col>
             </v-row>
         </v-container>
-        <v-container>
+        <v-container v-else>
             <v-row>
                 <v-col class="mt-4 d-flex align-center justify-center" style="height: 200px;">
                     등록된 데이터가 없습니다.

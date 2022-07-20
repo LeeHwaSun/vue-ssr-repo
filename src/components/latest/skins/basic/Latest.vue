@@ -39,7 +39,7 @@
                 </v-list-item>
             </div>
         </v-list>
-        <v-list>
+        <v-list v-else>
             <v-divider/>
             <v-list-item>
                 <v-list-item-content>
