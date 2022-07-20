@@ -53,7 +53,7 @@
         </v-container>
         <div v-else>
             <div><v-divider /></div>
-            <div class="d-flex justify-center align-center" style="height: 100px;">
+            <div class="d-flex justify-center align-center" style="height: 200px;">
                 데이터가 없습니다.
             </div>
         </div>
