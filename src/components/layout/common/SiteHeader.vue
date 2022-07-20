@@ -1,5 +1,5 @@
 <template>
-  <v-btn text plain class="text-none text-h6 px-0" to="/">{{ title }}</v-btn>
+  <v-btn text plain class="text-none title-header px-0" to="/">{{ title }}</v-btn>
 </template>
 
 <script>

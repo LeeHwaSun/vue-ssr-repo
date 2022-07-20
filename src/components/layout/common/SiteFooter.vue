@@ -1,5 +1,5 @@
 <template>
-  <v-footer app gray class="justify-center" absolute>
+  <v-footer app gray class="justify-center footer" absolute>
       &copy; {{ new Date().getFullYear() }} {{ footer }}
   </v-footer>
 </template>

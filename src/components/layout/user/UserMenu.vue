@@ -4,7 +4,7 @@
         <v-card-text class="text-subtitle-1">
             <b>{{user.user_name}}</b> ({{LV_LABEL(user.user_level)}})</v-card-text>
         <!-- 관리자 메뉴 -->
-        <v-list v-if="isAdmin" dense>
+        <v-list v-if="isAdmin && !isXs" dense>
             <v-subheader>Admin Menu</v-subheader>
             <v-list-item
                 v-for="item in admMenus"
@@ -77,6 +77,9 @@ export default {
         }),
         ...mapGetters('user', ["isAdmin", "isSuper"]),
         LV_LABEL : () => LV_LABEL,
+        isXs() {
+            return this.$vuetify.breakpoint.xs ? true : false;
+        }
     },
     methods: {
         ...mapMutations('user', ['SET_USER']),

@@ -77,6 +77,9 @@ export default {
             return Math.ceil(this.totalItems / this.options.itemsPerPage);
         }
     },
+    created() {
+        this.options = this.initOptions();
+    },
     watch : {
         options: {
             handler() {
@@ -86,6 +89,14 @@ export default {
         }
     },
     methods : {
+        initOptions() {
+            const { query } = this.$route;
+            const options = {
+                page : Number(query.page) || 1,
+                itemsPerPage : Number(query.itemsPerPage) || 10
+            };
+            return options;
+        },
         async getDataFromApi() {
             this.loading = true;
 

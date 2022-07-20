@@ -1,8 +1,8 @@
 <template>
-    <v-parallax height="200" dark src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
+    <v-parallax height="200" dark :src="src">
         <v-row class="align-center justify-center">
             <v-col class="text-center" cols="12">
-                <h1 class="text-h3 font-weight mb-4">
+                <h1 class="content-title font-weight mb-4">
                     {{ item.wr_title }}
                 </h1>
             </v-col>
@@ -17,6 +17,17 @@ export default {
         item : {
             type : Object,
             required : true
+        }
+    },
+    computed: {
+        src() {
+            let src = 'https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg';
+            const darkMode = this.$vuetify.theme.dark;
+            if (darkMode) {
+                src = 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg';
+            }
+
+            return src;
         }
     }
 }

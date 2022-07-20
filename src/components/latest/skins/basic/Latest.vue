@@ -33,8 +33,8 @@
                     <v-list-item-action-text>
                         <v-icon small>mdi-account</v-icon>
                         {{ item.wr_name }}
-                        <v-icon class="ml-2" small>mdi-clock-outline</v-icon>
-                        <display-time :time="item.wr_create_at" />
+                        <v-icon v-if="!isXs" class="ml-2" small>mdi-clock-outline</v-icon>
+                        <display-time v-if="!isXs" :time="item.wr_create_at" />
                     </v-list-item-action-text>
                 </v-list-item>
             </div>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import DisplayTime from '../../../layout/user/DisplayTime.vue';
+import DisplayTime from '../../../layout/common/DisplayTime.vue';
 export default {
     components: { DisplayTime },
     name: "BasicLatest",
@@ -81,6 +81,9 @@ export default {
                 return true;
             }
             return false;
+        },
+        isXs() {
+            return this.$vuetify.breakpoint.xs ? true : false;
         }
     },
 }

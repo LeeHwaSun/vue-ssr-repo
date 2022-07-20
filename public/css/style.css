@@ -22,20 +22,6 @@
 .menu-drag-container .menu-drag-zone { padding-bottom : 1rem; }
 /* // Drag Menu CSS */
 
-/* Board List Interactive CSS */
-@media screen and (min-width : 600px) {
-    .fixedTable table { table-layout: fixed; }
-    .basic-title { width: 100%; }
-    .basic-title > span { display: block; width: 100%; }
-}
-@media screen and (max-width : 600px) {
-    .fixedTable > div { overflow: hidden }
-    .fixedTable .v-data-table__mobile-table-row { max-width: calc(100vw - 24px) }
-    .fixedTable .v-data-table__mobile-row__header { width: 80px }
-    .fixedTable .v-data-table__mobile-row__cell .basic-title > span > div { display: block; max-width: calc(100vw - 120px); }
-}
-/* // Board List Interactive CSS */
-
 /* Gallery Preview */
 .gal-item .v-image__image { transition: all 0.4s; }
 .gal-item:hover .v-image__image { transform: scale(1.2, 1.2); opacity: 0.8; }
@@ -47,3 +33,27 @@
 ::-webkit-scrollbar-thumb { background-clip: padding-box; border-left: 1px solid transparent; border-right: 1px solid transparent; }
 ::-webkit-scrollbar-thumb:hover { background-color: #5a6e81; }
 /* //Scroll Bar Webkit */
+
+/* Interactive CSS */
+@media screen and (min-width : 600px) {
+    .title-header { font-weight: 500; font-size: 1.25rem !important; letter-spacing: .0125em; }
+    .footer { font-size: 1rem !important; }
+    .main-text { font-weight: 300; font-size: 6rem !important; letter-spacing: -.015625em; }
+    .content-title { font-weight: 400; font-size: 3rem !important; letter-spacing: normal; }
+
+    .fixedTable table { table-layout: fixed; }
+    .basic-title { width: 100%; }
+    .basic-title > span { display: block; width: 100%; }
+}
+@media screen and (max-width : 600px) {
+    .title-header { font-weight: 500; font-size: 1rem !important; letter-spacing: .0125rem; }
+    .footer { font-size: 0.75rem !important; }
+    .main-text { font-weight: 600; font-size: 3rem !important; letter-spacing: -.015625em; }
+    .content-title { font-weight: 400; font-size: 2rem !important; letter-spacing: normal; }
+
+    .fixedTable > div { overflow: hidden }
+    .fixedTable .v-data-table__mobile-table-row { max-width: calc(100vw - 24px) }
+    .fixedTable .v-data-table__mobile-row__header { width: 80px }
+    .fixedTable .v-data-table__mobile-row__cell .basic-title > span > div { display: block; max-width: calc(100vw - 120px); }
+}
+/* // Interactive CSS */
