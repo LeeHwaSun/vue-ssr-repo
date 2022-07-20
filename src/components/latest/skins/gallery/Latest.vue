@@ -51,12 +51,13 @@
                 </v-col>
             </v-row>
         </v-container>
-        <div v-else>
-            <div><v-divider /></div>
-            <div class="d-flex justify-center align-center" style="height: 200px;">
-                데이터가 없습니다.
-            </div>
-        </div>
+        <v-container>
+            <v-row>
+                <v-col class="mt-4 d-flex align-center justify-center" style="height: 200px;">
+                    등록된 데이터가 없습니다.
+                </v-col>
+            </v-row>
+        </v-container>
     </v-card>
 </template>
 
