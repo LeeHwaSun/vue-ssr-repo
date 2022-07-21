@@ -7,7 +7,7 @@
                 <v-icon>mdi-dots-horizontal</v-icon>
             </v-btn>
         </v-card-title>
-        <v-list v-if="items.length" >
+        <v-list>
             <div v-for="item in items" :key="item.wr_id">
                 <v-divider />
                 <v-list-item :to="`/board/${table}/${item.wr_id}`">
@@ -39,22 +39,6 @@
                 </v-list-item>
             </div>
         </v-list>
-        <v-list v-else>
-            <v-divider/>
-            <v-list-item>
-                <v-list-item-content>
-                    <div class="d-flex justify-center align-center" style="height: 200px;">
-                        등록된 데이터가 없습니다.
-                    </div>
-                </v-list-item-content>
-            </v-list-item>
-        </v-list>
-        <!-- <span v-else>
-            <div><v-divider /></div>
-            <div class="d-flex justify-center align-center" style="height: 200px;">
-                데이터가 없습니다.
-            </div>
-        </span> -->
     </v-card>
 </template>
 

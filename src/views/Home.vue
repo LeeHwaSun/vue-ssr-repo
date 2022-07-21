@@ -17,7 +17,7 @@
 			<board-latest table="notice" skin="basic" :limit="4" :isDivided="true" />
 		</div>
 		<board-latest table="qna" skin="basic" :limit="5" :isDivided="false" />
-		<board-latest table="gallery" skin="gallery" :limit="6" :isDivided=false />
+		<!-- <board-latest table="gallery" skin="gallery" :limit="6" :isDivided=false /> -->
 		<!--board-latest table="gallery1" skin="slider" :limit="3" /-->
 		<!-- <board-latest table="test1" skin="basic" :limit="4" /> -->
 		<!-- <span class="d-flex" v-if="!isXs">

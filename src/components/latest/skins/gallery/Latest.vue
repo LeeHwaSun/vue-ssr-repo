@@ -8,7 +8,7 @@
             </v-btn>
         </v-card-title>
         <v-divider />
-        <v-container v-if="items.length" fluid>
+        <v-container fluid>
             <v-row>
                 <v-col 
                     class="mt-4 gal-item" 
@@ -48,13 +48,6 @@
                             <v-img :src="getImage(item, table, imgSize)" :aspect-ratio="1" style="border: 0.1px solid #b8b8b8;" />
                         </a>
                     </v-card>   
-                </v-col>
-            </v-row>
-        </v-container>
-        <v-container v-else>
-            <v-row>
-                <v-col class="mt-4 d-flex align-center justify-center" style="height: 200px;">
-                    등록된 데이터가 없습니다.
                 </v-col>
             </v-row>
         </v-container>
