@@ -60,7 +60,7 @@
                     <div class="d-flex justify-space-between align-center ml-4 pt-2 pb-2">
                         <div>
                             <v-icon small>mdi-eye</v-icon> {{ item.wr_view }}
-                            <v-icon small class="ml-2">mdi-comment-outline</v-icon> {{ item.wr_reply }}
+                            <v-icon small class="ml-2">mdi-comment-outline</v-icon> {{ item.replys }}
                         </div>
                         <v-spacer/>
                         <display-good 
