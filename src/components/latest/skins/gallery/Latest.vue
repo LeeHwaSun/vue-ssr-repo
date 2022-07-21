@@ -30,16 +30,13 @@
                                 {{ item.wr_title }}
                             </span>
                         </v-card-title>
-                        <v-card-subtitle :class="!isXs ? 'd-flex pb-2' : ''">
+                        <v-card-subtitle class="d-flex pb-2">
                             <div>
                                 <v-icon small>mdi-eye</v-icon> {{ item.wr_view }}
                                 <v-icon small class="ml-2">mdi-comment-outline</v-icon> {{ item.wr_reply }}
                             </div>
                             <v-spacer />
-                            <div class="d-flex" v-if="!isXs">
-                                <v-icon class="mr-1" small>mdi-clock-outline</v-icon>
-                                <display-time :time="item.wr_create_at" />
-                            </div>
+                            <display-time :time="item.wr_create_at" />
                         </v-card-subtitle>
                         <a 
                             @click="$router.push(`/board/${table}/${item.wr_id}`)" 
