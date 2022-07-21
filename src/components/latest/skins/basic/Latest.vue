@@ -1,5 +1,5 @@
 <template>
-    <v-card :width="calculateWidth ? '50%' : '100%'">
+    <v-card>
         <v-card-title>
             {{ subject }}
             <v-spacer />
@@ -63,19 +63,9 @@ export default {
         loading : {
             type : Boolean,
             default : false,
-        },
-        isDivided : {
-            type : Boolean,
-            default : false
         }
     },
     computed: {
-        calculateWidth() {
-            if (this.isDivided) {
-                return true;
-            }
-            return false;
-        },
         isXs() {
             return this.$vuetify.breakpoint.xs ? true : false;
         }
