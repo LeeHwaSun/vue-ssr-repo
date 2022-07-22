@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-parallax height="400" dark :src="src">
+		<!-- <v-parallax height="400" dark :src="src">
 			<v-row class="align-center justify-center">
 				<v-col class="text-center" cols="12">
 					<h1 class="main-text font-weight mb-4">
@@ -11,7 +11,10 @@
 					</h4>
 				</v-col>
 			</v-row>
-		</v-parallax>		
+		</v-parallax>		 -->
+		<board-latest table="gallery" skin="slider" :limit="3" />
+		<board-latest table="board" skin="basic" :limit="4" />
+		<board-latest table="gallery" skin="gallery" :limit="6" />
 		<popup-opener />
 	</div>
 </template>

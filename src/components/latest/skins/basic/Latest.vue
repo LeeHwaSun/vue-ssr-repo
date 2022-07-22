@@ -65,11 +65,6 @@ export default {
             default : false,
         }
     },
-    computed: {
-        isXs() {
-            return this.$vuetify.breakpoint.xs ? true : false;
-        }
-    },
 }
 </script>
 

@@ -86,9 +86,6 @@ export default {
     },
     computed: {
         getImage : () => getImage,
-        isXs() {
-            return this.$vuetify.breakpoint.xs ? true : false;
-        }
     }
 }
 </script>
