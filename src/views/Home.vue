@@ -33,15 +33,15 @@ export default {
 		...mapState({
 			title : (state) => state.config?.title || '홈페이지',
 		}),
-		src() {
-			let src = 'https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg';
-			const darkMode = this.$vuetify.theme.dark;
-			if (darkMode) {
-				src = 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg';
-			}
+		// src() {
+		// 	let src = 'https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg';
+		// 	const darkMode = this.$vuetify.theme.dark;
+		// 	if (darkMode) {
+		// 		src = 'https://cdn.vuetifyjs.com/images/parallax/material2.jpg';
+		// 	}
 
-			return src;
-		}
+		// 	return src;
+		// }
 	},
 }
 </script>
